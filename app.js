@@ -83,14 +83,27 @@ function parse2019(filename) {
     };
   })
 };
-let y2015 = parse2015("/data/2015.csv");
-let y2016 = parse2016("/data/2016.csv");
-let y2017 = parse2017("/data/2017.csv");
-let y2018 = parse2018("/data/2018.csv");
-let y2019 = parse2019("/data/2019.csv");
+
+async function convertToObject(func, filename) {
+  let myObj = new Object();
+  let y = await func(filename);
+  y.forEach((row) => {
+    myObj[row["country"]] = row;
+  })
+  return myObj;
+};
+
+//let y2015 = parse2015("/data/2015.csv");
+let y2015 = convertToObject(parse2015, "/data/2015.csv")
+let y2016 = convertToObject(parse2016, "/data/2016.csv")
+let y2017 = convertToObject(parse2017, "/data/2017.csv")
+let y2018 = convertToObject(parse2018, "/data/2018.csv")
+let y2019 = convertToObject(parse2019, "/data/2019.csv")
+
 y2015.then((d) => console.log("2015", d));
 y2016.then((d) => console.log("2016", d));
 y2017.then((d) => console.log("2017", d));
 y2018.then((d) => console.log("2018", d));
 y2019.then((d) => console.log("2019", d));
+
 
