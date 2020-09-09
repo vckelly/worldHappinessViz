@@ -84,8 +84,9 @@ function parse2019(filename) {
   })
 };
 
-async function convertToObject(func, filename) {
+async function convertToObject(func, filename, year) {
   let myObj = new Object();
+  myObj["year"] = year;
   let y = await func(filename);
   y.forEach((row) => {
     myObj[row["country"]] = row;
@@ -93,44 +94,40 @@ async function convertToObject(func, filename) {
   return myObj;
 };
 
-// let y2015 = convertToObject(parse2015, "/data/2015.csv")
-let y2016 = convertToObject(parse2016, "/data/2016.csv")
-let y2017 = convertToObject(parse2017, "/data/2017.csv")
-let y2018 = convertToObject(parse2018, "/data/2018.csv")
-let y2019 = convertToObject(parse2019, "/data/2019.csv")
+let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015)
+let y2016 = convertToObject(parse2016, "/data/2016.csv", 2016)
+let y2017 = convertToObject(parse2017, "/data/2017.csv", 2017)
+let y2018 = convertToObject(parse2018, "/data/2018.csv", 2018)
+let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
 
-// y2015.then((d) => console.log("2015", d));
-y2016.then((d) => console.log("2016", d));
-y2017.then((d) => console.log("2017", d));
-y2018.then((d) => console.log("2018", d));
-y2019.then((d) => console.log("2019", d));
+objArr = {}
+Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
+  values.forEach((v) => {
+    objArr[v.year] = v;
+  })
+});
+console.log("objArr", typeof(objArr), objArr);
+// //y2015.then((d) => console.log("2015", typeof(d), d));
+// y2016.then((d) => console.log("2016", d));
+// y2017.then((d) => console.log("2017", d));
+// y2018.then((d) => console.log("2018", d));
+// y2019.then((d) => console.log("2019", d));
 
-let y2015 = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
-  // .defer(convertToObject(parse2015, "/data/2015.csv"), function(row) {
-  //   return {
-  //     country: row.country,
-  //     countryCode: row.countryCode
-  //   }
-  // })
-  // .defer(d3.csv, './country_data.csv', function(row) {
-  //   return {
-  //     country: row.country,
-  //     countryCode: row.countryCode,
-  //     population: +row.population,
-  //     medianAge: +row.medianAge,
-  //     fertilityRate: +row.fertilityRate,
-  //     populationDensity: +row.population / +row.landArea
-  //   }
-  // })
-  // .await(function(error, mapData, populationData) {
-  .then(function(error, mapData) {
-    if (error) throw error;
-
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
+  .then((mapData) => {
     var geoData = topojson.feature(mapData, mapData.objects.countries).features;
-
+    for (let c in objArr[2015]) {
+      if (c !== 'year') {
+        //TODO: Results not filtering from geoData
+        let geoResult = geoData.filter(x => x.properties.name === c.country);
+        console.log(c, geoResult);
+        if (geoResult.length > 0) {
+          console.log("Found result for " + c.country);
+          c["geoData"] = geoResult[0];
+          c["id"] = geoResult[0].id;
+        }      
+      }
+    };
     debugger
-
-    populationData.forEach(row => {
-      var countries = geoData.filter(d => d.id === row.countryCode);
-      countries.forEach(country => country.properties = row);
-    })});
+  })
+  .catch((e) => console.log(e));
