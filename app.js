@@ -106,28 +106,36 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
     objArr[v.year] = v;
   })
 });
-console.log("objArr", typeof(objArr), objArr);
-// //y2015.then((d) => console.log("2015", typeof(d), d));
-// y2016.then((d) => console.log("2016", d));
-// y2017.then((d) => console.log("2017", d));
-// y2018.then((d) => console.log("2018", d));
-// y2019.then((d) => console.log("2019", d));
 
-d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
-  .then((mapData) => {
-    var geoData = topojson.feature(mapData, mapData.objects.countries).features;
-    for (let c in objArr[2015]) {
-      if (c !== 'year') {
-        //TODO: Results not filtering from geoData
-        let geoResult = geoData.filter(x => x.properties.name === c.country);
-        console.log(c, geoResult);
-        if (geoResult.length > 0) {
-          console.log("Found result for " + c.country);
-          c["geoData"] = geoResult[0];
-          c["id"] = geoResult[0].id;
-        }      
-      }
-    };
-    debugger
+let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
+  .then(mapData => {
+    let geoData = topojson.feature(mapData, mapData.objects.countries).features;
+    [2015, 2016, 2017, 2018, 2019].forEach(year => {
+      for (let key in objArr[year]) {
+        if (key !== 'year') {
+          let geoResult = geoData.filter(x => x.properties.name === key);
+          if (geoResult.length > 0) {
+            objArr[year][key]["geoData"] = geoResult[0];
+            objArr[year][key]["id"] = geoResult[0].id;
+          }      
+        }
+      };
+    })
+    let width = 960;
+    let height = 600;
+
+    let path = d3.geoPath();
+
+    d3.select("svg")
+        .attr("height", height)
+        .attr("width", width)
+      .selectAll(".country")
+      .data(objArr)
+      .enter()
+        .append("path")
+        .classed("country", true)
+        .attr("d", path);
   })
   .catch((e) => console.log(e));
+
+
