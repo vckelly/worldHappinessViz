@@ -121,20 +121,31 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
       };
     })
-    let width = 960;
-    let height = 600;
+    const width = 960;
+    const height = 600;
+    let svg = d3.select('svg');
+    svg.attr('height', height)
+       .attr('width', width);
 
-    let path = d3.geoPath();
+    const projection = d3.geoMercator();
+    const pathGenerator = d3.geoPath().projection(projection);
 
-    d3.select("svg")
-        .attr("height", height)
-        .attr("width", width)
-      .selectAll(".country")
-      .data(objArr)
-      .enter()
-        .append("path")
-        .classed("country", true)
-        .attr("d", path);
+    const paths = svg.selectAll('path')
+                     .data(geoData);
+    paths.enter()
+         .append('path')
+           .attr('d', d => pathGenerator(d));
+
+    // d3.select("svg")
+    //     .attr("height", height)
+    //     .attr("width", width)
+    //   .selectAll(".country")
+    //   .data(objArr)
+    //   .enter()
+    //     .append("path")
+    //     .classed("country", true)
+    //     .attr("d", path);
+    //debugger;
   })
   .catch((e) => console.log(e));
 
