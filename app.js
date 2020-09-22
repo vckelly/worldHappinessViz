@@ -132,14 +132,25 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     svg.append('path')
        .attr('class', 'sphere')
-       .attr('d', pathGenerator({type: 'Sphere'}))
+       .attr('d', pathGenerator({type: 'Sphere'}));
 
     svg.selectAll('path')
        .data(geoData)
        .enter()
        .append('path')
-        .attr('class', 'country')
-        .attr('d', d => pathGenerator(d));
+         .attr('class', 'country')
+         .attr('d', d => pathGenerator(d))
+       .append('title')
+         .text(d => {
+           let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
+           if (surveyData[0]) {
+             return `${d.properties.name}\nHappiness Rank: ${surveyData[0].hRank}`;
+           }
+           else {
+             return d.properties.name;
+           }
+          }
+        );
   
     // d3.select("svg")
     //     .attr("height", height)
