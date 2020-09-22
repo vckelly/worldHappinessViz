@@ -4,6 +4,19 @@
 
 body {
   margin: 0;
-  background: #ecf0f1;
   overflow: hidden;
+}
+
+.sphere{
+  fill: darkblue;
+}
+
+.country {
+  fill: grey;
+  stroke: black;
+  stroke-opacity: 0.4;
+}
+
+.country:hover {
+  fill: red;
 }
