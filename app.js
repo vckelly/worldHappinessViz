@@ -107,13 +107,28 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
   })
 });
 
+//Countries with name issues (2015):
+/*
+  Bosnia and Herz.
+  Domincan Republic
+  Czech Republic
+  Guinea
+  Ivory Coast
+  Niger
+  Sudan
+  Somaliland
+  Central African Republic
+  Congo
+*/
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
+    console.log(geoData);
+    console.log(objArr[2015]);
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
         if (key !== 'year') {
-          let geoResult = geoData.filter(x => x.properties.name === key);
+          let geoResult = geoData.filter(x => key.includes(x.properties.name) === true || x.properties.name.includes(key) === true);
           if (geoResult.length > 0) {
             objArr[year][key]["geoData"] = geoResult[0];
             objArr[year][key]["id"] = geoResult[0].id;
