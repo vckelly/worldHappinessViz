@@ -113,6 +113,7 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
   Domincan Republic
   Czech Republic
   Guinea
+  India
   Ivory Coast
   Niger
   Sudan
@@ -123,8 +124,8 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
-    console.log(geoData);
-    console.log(objArr[2015]);
+    // console.log(geoData);
+    // console.log(objArr[2015]);
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
         if (key !== 'year') {
@@ -142,7 +143,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     svg.attr('height', height)
        .attr('width', width);
 
-    const projection = d3.geoNaturalEarth1();
+    const projection = d3.geoNaturalEarth1()
+                         .scale(170)
+                         .translate([width / 2, height / 2]);
     const pathGenerator = d3.geoPath().projection(projection);
 
     svg.append('path')
@@ -166,18 +169,21 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
            }
           }
         );
-  
-    // d3.select("svg")
-    //     .attr("height", height)
-    //     .attr("width", width)
-    //   .selectAll(".country")
-    //   .data(objArr)
-    //   .enter()
-    //     .append("path")
-    //     .classed("country", true)
-    //     .attr("d", path);
-    //debugger;
-  })
-  .catch((e) => console.log(e));
+
+    let scale = d3.scaleLinear()
+                  .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
+                  .range(['#0DFE5A', '#C41010']);
+
+    d3.selectAll('.country')
+        .transition()
+        .duration(750)
+        .ease(d3.easeBackIn)
+        .attr('fill', d => {
+          let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
+          return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
+        });
+
+
+  }).catch((e) => console.log(e));
 
 

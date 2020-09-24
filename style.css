@@ -12,11 +12,10 @@ body {
 }
 
 .country {
-  fill: grey;
   stroke: black;
   stroke-opacity: 0.4;
 }
 
 .country:hover {
-  fill: red;
+  fill: yellow;
 }
