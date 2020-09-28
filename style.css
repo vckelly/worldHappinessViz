@@ -8,7 +8,7 @@ body {
 }
 
 .sphere{
-  fill: darkblue;
+  fill: lightskyblue;
 }
 
 .country {
@@ -18,4 +18,9 @@ body {
 
 .country:hover {
   fill: yellow;
+}
+
+select {
+  margin: auto;
+  width: 8%;
 }
