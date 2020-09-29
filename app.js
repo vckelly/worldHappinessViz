@@ -100,7 +100,7 @@ let y2017 = convertToObject(parse2017, "/data/2017.csv", 2017)
 let y2018 = convertToObject(parse2018, "/data/2018.csv", 2018)
 let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
 
-objArr = {}
+let objArr = {}
 Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
   values.forEach((v) => {
     objArr[v.year] = v;
@@ -108,24 +108,21 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
 });
 
 function calculateRankings(obj) {
-  rankings = {};
-  rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
-  [2015, 2016, 2017, 2018, 2019].forEach(year => {
+  let rankings = {};
+  let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
+  [2015, 2016, 2017, 2018, 2019].forEach((year) => {
     rankings[year] = {};
-    curYear = Object.values(obj[year]);
+    let curYear = Object.values(obj[year]);
     curYear.shift();
     rankedMetrics.forEach(metric => {
-      curMetric = curYear;
-      curMetric.sort(function(a, b) {
-        //console.log(a[metric], b[metric]);
-        return parseInt(a[metric]) - parseInt(b[metric]);
-      });
-      console.log(curMetric);
+      let curMetric = [...curYear];
+      curMetric.sort((a, b) => (a[metric] >= b[metric] ? -1 : 1));
       rankings[year][metric] = curMetric;
-    })
+    });
   });
   return rankings;
 }
+
 //Countries with name issues (2015):
 /*
   Bosnia and Herz.
@@ -140,7 +137,6 @@ function calculateRankings(obj) {
   Central African Republic
   Congo
 */
-
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
@@ -157,10 +153,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
       };
     })
-
-    //console.log(Object.values(objArr[2015]));
-    rankings = calculateRankings(objArr);
-    console.log(rankings);
+    let rankings = calculateRankings(objArr);
 
     const width = 960;
     const height = 700;
