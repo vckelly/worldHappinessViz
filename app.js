@@ -117,10 +117,22 @@ function calculateRankings(obj) {
     rankedMetrics.forEach(metric => {
       let curMetric = [...curYear];
       curMetric.sort((a, b) => (a[metric] >= b[metric] ? -1 : 1));
+      curMetric = curMetric.map((key) => key['id']);
       rankings[year][metric] = curMetric;
     });
   });
   return rankings;
+}
+
+function tooltipText(rankings, year, countryId) {
+  let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
+  let t = '';
+  let length = rankings[year]['econ'].length;
+  rankedMetrics.forEach((metric) => {
+    curRank = rankings[year][metric].indexOf(countryId) + 1;
+    t += `${metric} rank: ${curRank} of ${length}\n`;
+  });
+  return t.trim();
 }
 
 //Countries with name issues (2015):
@@ -153,7 +165,10 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
       };
     })
+
+    //console.log(Object.values(objArr[2015]));
     let rankings = calculateRankings(objArr);
+    console.log(rankings);
 
     const width = 960;
     const height = 700;
@@ -180,7 +195,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .text(d => {
            let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
            if (surveyData[0]) {
-             return `${d.properties.name}\nHappiness Rank: ${surveyData[0].hRank}`;
+             return `${d.properties.name}\nHappiness Rank: ${surveyData[0].hRank}\n` + tooltipText(rankings, 2015, d.id);
            }
            else {
              return d.properties.name;
