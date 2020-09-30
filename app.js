@@ -124,15 +124,19 @@ function calculateRankings(obj) {
   return rankings;
 }
 
-function tooltipText(rankings, year, countryId) {
-  let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
-  let t = '';
-  let length = rankings[year]['econ'].length;
-  rankedMetrics.forEach((metric) => {
-    curRank = rankings[year][metric].indexOf(countryId) + 1;
-    t += `${metric} rank: ${curRank} of ${length}\n`;
-  });
-  return t.trim();
+function tooltipText(objArr, rankings, year, country) {
+  let surveyData = Object.values(objArr[year]).filter(x => x.id === country.id);
+  if (surveyData[0]){
+    let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
+    let length = rankings[year]['econ'].length;
+    let t = `${country.properties.name}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
+    rankedMetrics.forEach((metric) => {
+      curRank = rankings[year][metric].indexOf(country.id) + 1;
+      t += `${metric} rank: ${curRank} of ${length}\n`;
+    });
+    return t.trim();
+  }
+  else { return country.properties.name }
 }
 
 //Countries with name issues (2015):
@@ -192,16 +196,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .attr('class', 'country')
          .attr('d', d => pathGenerator(d))
        .append('title')
-         .text(d => {
-           let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
-           if (surveyData[0]) {
-             return `${d.properties.name}\nHappiness Rank: ${surveyData[0].hRank}\n` + tooltipText(rankings, 2015, d.id);
-           }
-           else {
-             return d.properties.name;
-           }
-          }
-        );
+         .text(d => { return tooltipText(objArr, rankings, 2015, d) });
 
     let scale = d3.scaleLinear()
                   .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
