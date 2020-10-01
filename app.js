@@ -156,8 +156,6 @@ function tooltipText(objArr, rankings, year, country) {
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
-    // console.log(geoData);
-    //console.log(Object.values(objArr[2015]));
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
         if (key !== 'year') {
@@ -170,20 +168,23 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       };
     })
 
-    //console.log(Object.values(objArr[2015]));
-    let rankings = calculateRankings(objArr);
-    console.log(rankings);
-
     const width = 960;
     const height = 700;
     let svg = d3.select('svg');
     svg.attr('height', height)
        .attr('width', width);
 
+    const rankings = calculateRankings(objArr);
+
     const projection = d3.geoNaturalEarth1()
                          .scale(170)
                          .translate([width / 2, height / 2]);
+
     const pathGenerator = d3.geoPath().projection(projection);
+
+    let scale = d3.scaleLinear()
+                  .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
+                  .range(['#0DFE5A', '#C41010']);
 
     svg.append('path')
        .attr('class', 'sphere')
@@ -196,22 +197,30 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .attr('class', 'country')
          .attr('d', d => pathGenerator(d))
        .append('title')
-         .text(d => { return tooltipText(objArr, rankings, 2015, d) });
-
-    let scale = d3.scaleLinear()
-                  .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
-                  .range(['#0DFE5A', '#C41010']);
+         .text(d => tooltipText(objArr, rankings, 2015, d));
 
     d3.selectAll('.country')
+      .attr('fill', d => {
+        let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
+        return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
+    });
+
+    const curYear = document.querySelector('#years');
+
+    curYear.addEventListener('change', (event) => {
+      let newYear = event.target.value;
+      svg.selectAll('path')
+         .select('title')
+           .text(d => tooltipText(objArr, rankings, newYear, d));
+    
+      d3.selectAll('.country')
         .transition()
         .duration(750)
         .ease(d3.easeBackIn)
         .attr('fill', d => {
-          let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
+          let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
           return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
         });
-
-
-  }).catch((e) => console.log(e));
-
+  });
+}).catch((e) => console.log(e));
 
