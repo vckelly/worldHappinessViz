@@ -138,6 +138,8 @@ function tooltipText(objArr, rankings, year, country) {
   }
   else { return country.properties.name }
 }
+//Countries not loading path
+//Zimbabwe
 
 //Countries with name issues (2015):
 /*
@@ -167,7 +169,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
       };
     })
-
+    console.log(geoData.filter(x => x.properties.name === "Zimbabwe"));
     const width = 960;
     const height = 700;
     let svg = d3.select('svg');
@@ -182,9 +184,14 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     const pathGenerator = d3.geoPath().projection(projection);
 
-    let scale = d3.scaleLinear()
-                  .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
-                  .range(['#0DFE5A', '#C41010']);
+    const colorRanges = {
+      'hRank': ['#0DFE5A', '#C41010'],
+      'econ': ['white', 'blue'],
+      'family': ['white', 'purple'],
+      'trust': ['white', 'orange'],
+      'freedom': ['white', 'brown'],
+      'generosity': ['white', 'pink']
+    };
 
     svg.append('path')
        .attr('class', 'sphere')
@@ -199,15 +206,26 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .append('title')
          .text(d => tooltipText(objArr, rankings, 2015, d));
 
+
+    let curYear = '2015';
+    let curMetric  = 'hRank';
+    let scale = d3.scaleLinear()
+                  .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
+                  .range(['#0DFE5A', '#C41010']);
+    //TODO: Fix scale 
+    // let scale = d3.scaleLinear()
+    // .domain([1, d3.max(Object.values(objArr[curYear]), d => d.curMetric)])
+    // .range(colorRanges[curMetric]);
+
     d3.selectAll('.country')
       .attr('fill', d => {
-        let surveyData = Object.values(objArr[2015]).filter(x => x.id === d.id);
-        return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
+        let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
+        return surveyData[0] ? scale(surveyData[0][curMetric]) : 'grey';
     });
 
-    const curYear = document.querySelector('#years');
+    const getYear = document.querySelector('#years');
 
-    curYear.addEventListener('change', (event) => {
+    getYear.addEventListener('change', (event) => {
       let newYear = event.target.value;
       svg.selectAll('path')
          .select('title')
@@ -221,6 +239,43 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
           let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
           return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
         });
-  });
+    });
+    //TODO: Fix event handler
+    // getYear.addEventListener('change', (event) => {
+    //   let newYear = event.target.value;
+    //   scale = d3.scaleLinear()
+    //               .domain([1, d3.max(Object.values(objArr[newYear]), d => d.hRank)])
+    //               .range(colorRanges[curMetric]);
+      
+    //   svg.selectAll('path')
+    //      .select('title')
+    //        .text(d => tooltipText(objArr, rankings, newYear, d));
+    
+    //   d3.selectAll('.country')
+    //     .transition()
+    //     .duration(750)
+    //     .ease(d3.easeBackIn)
+    //     .attr('fill', d => {
+    //       let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
+    //       return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
+    //     });
+    // });
+
+    const getMetric = document.querySelector('#metrics');
+    //TODO: Fix event handler
+    // getMetric.addEventListener('change', (event) => {
+    //   let newMetric = event.target.value;
+    //   scale = d3.scaleLinear()
+    //               .domain([1, d3.max(Object.values(objArr[getYear]), d => d.hRank)])
+    //               .range(colorRanges[newMetric]);
+    //   d3.selectAll('.country')
+    //     .transition()
+    //     .duration(750)
+    //     .ease(d3.easeBackIn)
+    //     .attr('fill', d => {
+    //       let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
+    //       return surveyData[0] ? scale(colorRanges[surveyData[0].newMetric]) : 'grey';
+    //     });
+    // });
 }).catch((e) => console.log(e));
 
