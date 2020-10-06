@@ -165,7 +165,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
           if (geoResult.length > 0) {
             objArr[year][key]["geoData"] = geoResult[0];
             objArr[year][key]["id"] = geoResult[0].id;
-          }      
+          }
+          else { console.log(key) };    
         }
       };
     })
@@ -186,11 +187,11 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     const colorRanges = {
       'hRank': ['#0DFE5A', '#C41010'],
-      'econ': ['white', 'blue'],
-      'family': ['white', 'purple'],
-      'trust': ['white', 'orange'],
-      'freedom': ['white', 'brown'],
-      'generosity': ['white', 'crimson']
+      'econ': ['white', '#081C15'],
+      'family': ['white', '#7161ef'],
+      'trust': ['white', '#03045E'],
+      'freedom': ['white', '#7161ef'],
+      'generosity': ['white', '#f15152']
     };
 
     svg.append('path')
@@ -253,11 +254,10 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       }
       d3.selectAll('.country')
         .transition()
-        .duration(750)
-        .ease(d3.easeBackIn)
+        .duration(1000)
+        .ease(d3.easeCubicInOut)
         .attr('fill', d => {
           let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-          if (surveyData[0]) { console.log(surveyData[0], scale(surveyData[0][newMetric])) };
           return surveyData[0] ? scale(surveyData[0][newMetric]) : 'grey';
         });
     });
