@@ -169,7 +169,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
       };
     })
-    console.log(geoData.filter(x => x.properties.name === "Zimbabwe"));
+    //console.log(geoData.filter(x => x.properties.name === "Zimbabwe"));
     const width = 960;
     const height = 700;
     let svg = d3.select('svg');
@@ -190,7 +190,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       'family': ['white', 'purple'],
       'trust': ['white', 'orange'],
       'freedom': ['white', 'brown'],
-      'generosity': ['white', 'pink']
+      'generosity': ['white', 'crimson']
     };
 
     svg.append('path')
@@ -210,12 +210,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     let curYear = '2015';
     let curMetric  = 'hRank';
     let scale = d3.scaleLinear()
-                  .domain([1, d3.max(Object.values(objArr[2015]), d => d.hRank)])
-                  .range(['#0DFE5A', '#C41010']);
-    //TODO: Fix scale 
-    // let scale = d3.scaleLinear()
-    // .domain([1, d3.max(Object.values(objArr[curYear]), d => d.curMetric)])
-    // .range(colorRanges[curMetric]);
+                  .domain([1, d3.max(Object.values(objArr[curYear]), d => d['hRank'])])
+                  .range(colorRanges[curMetric]);
 
     d3.selectAll('.country')
       .attr('fill', d => {
@@ -237,45 +233,33 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .ease(d3.easeBackIn)
         .attr('fill', d => {
           let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
-          return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
+          return surveyData[0] ? scale(surveyData[0][curMetric]) : 'grey';
         });
     });
-    //TODO: Fix event handler
-    // getYear.addEventListener('change', (event) => {
-    //   let newYear = event.target.value;
-    //   scale = d3.scaleLinear()
-    //               .domain([1, d3.max(Object.values(objArr[newYear]), d => d.hRank)])
-    //               .range(colorRanges[curMetric]);
-      
-    //   svg.selectAll('path')
-    //      .select('title')
-    //        .text(d => tooltipText(objArr, rankings, newYear, d));
-    
-    //   d3.selectAll('.country')
-    //     .transition()
-    //     .duration(750)
-    //     .ease(d3.easeBackIn)
-    //     .attr('fill', d => {
-    //       let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
-    //       return surveyData[0] ? scale(surveyData[0].hRank) : 'grey';
-    //     });
-    // });
 
     const getMetric = document.querySelector('#metrics');
-    //TODO: Fix event handler
-    // getMetric.addEventListener('change', (event) => {
-    //   let newMetric = event.target.value;
-    //   scale = d3.scaleLinear()
-    //               .domain([1, d3.max(Object.values(objArr[getYear]), d => d.hRank)])
-    //               .range(colorRanges[newMetric]);
-    //   d3.selectAll('.country')
-    //     .transition()
-    //     .duration(750)
-    //     .ease(d3.easeBackIn)
-    //     .attr('fill', d => {
-    //       let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-    //       return surveyData[0] ? scale(colorRanges[surveyData[0].newMetric]) : 'grey';
-    //     });
-    // });
+    getMetric.addEventListener('change', (event) => {
+      let newMetric = event.target.value;
+      curMetric = newMetric;
+      if (curMetric === 'hRank') {
+        scale = d3.scaleLinear()
+                  .domain([1, d3.max(Object.values(objArr[curYear]), d => d[curMetric])])
+                  .range(colorRanges[curMetric]);
+      }
+      else {
+        scale = d3.scaleLinear()
+                  .domain([0, d3.max(Object.values(objArr[curYear]), d => d[curMetric])])
+                  .range(colorRanges[curMetric]);
+      }
+      d3.selectAll('.country')
+        .transition()
+        .duration(750)
+        .ease(d3.easeBackIn)
+        .attr('fill', d => {
+          let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
+          if (surveyData[0]) { console.log(surveyData[0], scale(surveyData[0][newMetric])) };
+          return surveyData[0] ? scale(surveyData[0][newMetric]) : 'grey';
+        });
+    });
 }).catch((e) => console.log(e));
 
