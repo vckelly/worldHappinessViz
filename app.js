@@ -271,7 +271,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       //             .range(colorRanges[curMetric]);
       // }
 
-      //TODO: Fix fill color to use country rank for individual metric
       d3.selectAll('.country')
         .transition()
         .duration(1000)
