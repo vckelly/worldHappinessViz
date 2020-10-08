@@ -86,9 +86,20 @@ function parse2019(filename) {
 
 async function convertToObject(func, filename, year) {
   let myObj = new Object();
+  const countryNameVariances = {
+    'Central African Rep.': 'Central African Republic',
+    'Bosnia and Herz.': 'Bosnia and Herzegovina',
+    'Czechia': 'Czech Republic',
+    'Dominican Rep.': 'Dominican Republic',
+    'Côite d\'Ivoire': 'Ivory Coast'
+  };
   myObj["year"] = year;
   let y = await func(filename);
   y.forEach((row) => {
+    if (Object.keys(countryNameVariances).includes(row['country'])) {
+      row['country'] = countryNameVariances[row['country']];
+    }
+    if (row['country'] === 'Somaliland region') { row['country'] = 'Somaliland' };
     myObj[row["country"]] = row;
   })
   return myObj;
@@ -155,22 +166,28 @@ function tooltipText(objArr, rankings, year, country) {
   Central African Republic
   Congo
 */
+
+
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
         if (key !== 'year') {
-          let geoResult = geoData.filter(x => key.includes(x.properties.name) === true || x.properties.name.includes(key) === true);
+          let geoResult = geoData.filter(x => key.includes(x.properties.name) === true || 
+                                         x.properties.name.includes(key) === true);// ||
+                                         //Object.keys(countryNameVariances).includes(x.properties.name));
           if (geoResult.length > 0) {
-            objArr[year][key]["geoData"] = geoResult[0];
+            //objArr[year][key]["geoData"] = geoResult[0];
             objArr[year][key]["id"] = geoResult[0].id;
           }
-          else { console.log(key) };    
+          //else { console.log(key, ) };    
         }
       };
     })
-    //console.log(geoData.filter(x => x.properties.name === "Zimbabwe"));
+    //console.log(geoData.filter(x => x.properties.name === "Somaliland"));
+    //console.log(Object.values(objArr[2015]).filter(x => x.country === "Somaliland"));
+    
     const width = 960;
     const height = 700;
     let svg = d3.select('svg');
@@ -178,6 +195,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .attr('width', width);
 
     const rankings = calculateRankings(objArr);
+    console.log(objArr, geoData, rankings);
 
     const projection = d3.geoNaturalEarth1()
                          .scale(170)
@@ -187,11 +205,11 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     const colorRanges = {
       'hRank': ['#0DFE5A', '#C41010'],
-      'econ': ['white', '#081C15'],
-      'family': ['white', '#7161ef'],
-      'trust': ['white', '#03045E'],
-      'freedom': ['white', '#7161ef'],
-      'generosity': ['white', '#f15152']
+      'econ': ['#081C15','white'],
+      'family': ['#7161ef', 'white'],
+      'trust': ['#03045E', 'white'],
+      'freedom': ['#7161ef', 'white'],
+      'generosity': ['#f15152', 'white']
     };
 
     svg.append('path')
@@ -211,7 +229,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     let curYear = '2015';
     let curMetric  = 'hRank';
     let scale = d3.scaleLinear()
-                  .domain([1, d3.max(Object.values(objArr[curYear]), d => d['hRank'])])
+                  .domain([1, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
 
     d3.selectAll('.country')
@@ -234,7 +252,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .ease(d3.easeBackIn)
         .attr('fill', d => {
           let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
-          return surveyData[0] ? scale(surveyData[0][curMetric]) : 'grey';
+          return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(d.id) + 1) : 'grey';
         });
     });
 
@@ -242,23 +260,26 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getMetric.addEventListener('change', (event) => {
       let newMetric = event.target.value;
       curMetric = newMetric;
-      if (curMetric === 'hRank') {
-        scale = d3.scaleLinear()
-                  .domain([1, d3.max(Object.values(objArr[curYear]), d => d[curMetric])])
-                  .range(colorRanges[curMetric]);
-      }
-      else {
-        scale = d3.scaleLinear()
-                  .domain([0, d3.max(Object.values(objArr[curYear]), d => d[curMetric])])
-                  .range(colorRanges[curMetric]);
-      }
+      // if (curMetric === 'hRank') {
+      scale = d3.scaleLinear()
+                .domain([1, Object.values(objArr[curYear]).length + 1])
+                .range(colorRanges[curMetric]);
+      // }
+      // else {
+      //   scale = d3.scaleLinear()
+      //             .domain([0, d3.max(Object.values(objArr[curYear]), d => d[curMetric])])
+      //             .range(colorRanges[curMetric]);
+      // }
+
+      //TODO: Fix fill color to use country rank for individual metric
       d3.selectAll('.country')
         .transition()
         .duration(1000)
         .ease(d3.easeCubicInOut)
         .attr('fill', d => {
           let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-          return surveyData[0] ? scale(surveyData[0][newMetric]) : 'grey';
+          //return surveyData[0] ? scale(surveyData[0][newMetric]) : 'grey';
+          return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(d.id) + 1) : 'grey';
         });
     });
 }).catch((e) => console.log(e));
