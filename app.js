@@ -120,14 +120,19 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
 
 function calculateRankings(obj) {
   let rankings = {};
-  let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
+  let rankedMetrics = ['hRank', 'econ', 'family', 'trust', 'freedom', 'generosity'];
   [2015, 2016, 2017, 2018, 2019].forEach((year) => {
     rankings[year] = {};
     let curYear = Object.values(obj[year]);
     curYear.shift();
     rankedMetrics.forEach(metric => {
       let curMetric = [...curYear];
-      curMetric.sort((a, b) => (a[metric] >= b[metric] ? -1 : 1));
+      if (metric === 'hRank') {
+        curMetric.sort((a, b) => (parseInt(a[metric]) < parseInt(b[metric]) ? -1 : 1));
+      }
+      else{
+        curMetric.sort((a, b) => (parseFloat(a[metric]) >= parseFloat(b[metric]) ? -1 : 1));
+      }
       curMetric = curMetric.map((key) => key['id']);
       rankings[year][metric] = curMetric;
     });
@@ -178,10 +183,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                                          x.properties.name.includes(key) === true);// ||
                                          //Object.keys(countryNameVariances).includes(x.properties.name));
           if (geoResult.length > 0) {
-            //objArr[year][key]["geoData"] = geoResult[0];
             objArr[year][key]["id"] = geoResult[0].id;
           }
-          //else { console.log(key, ) };    
         }
       };
     })
@@ -195,7 +198,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .attr('width', width);
 
     const rankings = calculateRankings(objArr);
-    console.log(objArr, geoData, rankings);
+    console.log(objArr, geoData.map(d => d.properties.name), rankings);
 
     const projection = d3.geoNaturalEarth1()
                          .scale(170)
@@ -235,13 +238,13 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     d3.selectAll('.country')
       .attr('fill', d => {
         let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-        return surveyData[0] ? scale(surveyData[0][curMetric]) : 'grey';
+        return surveyData[0] ? scale(surveyData[0]['hRank']) : 'grey';
     });
 
     const getYear = document.querySelector('#years');
-
     getYear.addEventListener('change', (event) => {
       let newYear = event.target.value;
+      curYear = newYear;
       svg.selectAll('path')
          .select('title')
            .text(d => tooltipText(objArr, rankings, newYear, d));
@@ -252,7 +255,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .ease(d3.easeBackIn)
         .attr('fill', d => {
           let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
-          return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(d.id) + 1) : 'grey';
+          return surveyData[0] ? scale(rankings[newYear][curMetric].indexOf(d.id) + 1) : 'grey';
         });
     });
 
@@ -260,16 +263,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getMetric.addEventListener('change', (event) => {
       let newMetric = event.target.value;
       curMetric = newMetric;
-      // if (curMetric === 'hRank') {
       scale = d3.scaleLinear()
                 .domain([1, Object.values(objArr[curYear]).length + 1])
                 .range(colorRanges[curMetric]);
-      // }
-      // else {
-      //   scale = d3.scaleLinear()
-      //             .domain([0, d3.max(Object.values(objArr[curYear]), d => d[curMetric])])
-      //             .range(colorRanges[curMetric]);
-      // }
 
       d3.selectAll('.country')
         .transition()
@@ -277,7 +273,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .ease(d3.easeCubicInOut)
         .attr('fill', d => {
           let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-          //return surveyData[0] ? scale(surveyData[0][newMetric]) : 'grey';
           return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(d.id) + 1) : 'grey';
         });
     });
