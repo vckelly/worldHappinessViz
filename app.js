@@ -91,14 +91,16 @@ async function convertToObject(func, filename, year) {
     'Bosnia and Herz.': 'Bosnia and Herzegovina',
     'Czechia': 'Czech Republic',
     'Dominican Rep.': 'Dominican Republic',
-    'Côite d\'Ivoire': 'Ivory Coast'
+    'Côite d\'Ivoire': 'Ivory Coast',
+    'United States of America': 'United States'
   };
   myObj["year"] = year;
   let y = await func(filename);
   y.forEach((row) => {
-    if (Object.keys(countryNameVariances).includes(row['country'])) {
-      row['country'] = countryNameVariances[row['country']];
-    }
+    // if (Object.values(countryNameVariances).includes(row['country'])) {
+    //   console.log(row['country']);
+    //   row['country'] = countryNameVariances[row['country']];
+    // }
     if (row['country'] === 'Somaliland region') { row['country'] = 'Somaliland' };
     myObj[row["country"]] = row;
   })
@@ -171,23 +173,37 @@ function tooltipText(objArr, rankings, year, country) {
   Central African Republic
   Congo
 */
-
+const countryNameVariances = {
+  'Central African Rep.': 'Central African Republic',
+  'Bosnia and Herz.': 'Bosnia and Herzegovina',
+  'Czechia': 'Czech Republic',
+  'Dominican Rep.': 'Dominican Republic',
+  'Côite d\'Ivoire': 'Ivory Coast',
+  'United States of America': 'United States'
+};
 
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
+    geoData.forEach(country => {
+      if (Object.keys(countryNameVariances).includes(country.properties.name)) {
+        country.properties.name = countryNameVariances[country.properties.name];
+      };
+    });
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
         if (key !== 'year') {
-          let geoResult = geoData.filter(x => key.includes(x.properties.name) === true || 
-                                         x.properties.name.includes(key) === true);// ||
-                                         //Object.keys(countryNameVariances).includes(x.properties.name));
+          let geoResult = geoData.filter(x => key === x.properties.name);
           if (geoResult.length > 0) {
             objArr[year][key]["id"] = geoResult[0].id;
           }
         }
       };
-    })
+    });
+
+    const rankings = calculateRankings(objArr);
+    //console.log(geoData);
+    console.log(objArr, geoData.map(d => [d.properties.name, d.id]), rankings);
     //console.log(geoData.filter(x => x.properties.name === "Somaliland"));
     //console.log(Object.values(objArr[2015]).filter(x => x.country === "Somaliland"));
     
@@ -197,8 +213,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     svg.attr('height', height)
        .attr('width', width);
 
-    const rankings = calculateRankings(objArr);
-    console.log(objArr, geoData.map(d => d.properties.name), rankings);
+    
+
 
     const projection = d3.geoNaturalEarth1()
                          .scale(170)
