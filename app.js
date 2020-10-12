@@ -85,24 +85,20 @@ function parse2019(filename) {
 };
 
 async function convertToObject(func, filename, year) {
+  const nameVariances = {
+    'Congo (Kinshasa)': 'Democratic Republic of the Congo',
+    'Congo (Brazzaville)': 'Congo'
+  }
   let myObj = new Object();
-  const countryNameVariances = {
-    'Central African Rep.': 'Central African Republic',
-    'Bosnia and Herz.': 'Bosnia and Herzegovina',
-    'Czechia': 'Czech Republic',
-    'Dominican Rep.': 'Dominican Republic',
-    'Côite d\'Ivoire': 'Ivory Coast',
-    'United States of America': 'United States'
-  };
-  myObj["year"] = year;
   let y = await func(filename);
+  myObj['year'] = year;
   y.forEach((row) => {
-    // if (Object.values(countryNameVariances).includes(row['country'])) {
-    //   console.log(row['country']);
-    //   row['country'] = countryNameVariances[row['country']];
-    // }
-    if (row['country'] === 'Somaliland region') { row['country'] = 'Somaliland' };
-    myObj[row["country"]] = row;
+    if (Object.keys(nameVariances).includes(row['country'])) {
+      myObj[nameVariances[row['country']]] = row;
+    }
+    else {
+      myObj[row['country']] = row;
+    }
   })
   return myObj;
 };
@@ -159,27 +155,16 @@ function tooltipText(objArr, rankings, year, country) {
 //Countries not loading path
 //Zimbabwe
 
-//Countries with name issues (2015):
-/*
-  Bosnia and Herz.
-  Domincan Republic
-  Czech Republic
-  Guinea
-  India
-  Ivory Coast
-  Niger
-  Sudan
-  Somaliland
-  Central African Republic
-  Congo
-*/
 const countryNameVariances = {
   'Central African Rep.': 'Central African Republic',
+  'Dem. Rep. Congo': 'Democratic Republic of the Congo',
   'Bosnia and Herz.': 'Bosnia and Herzegovina',
   'Czechia': 'Czech Republic',
   'Dominican Rep.': 'Dominican Republic',
-  'Côite d\'Ivoire': 'Ivory Coast',
-  'United States of America': 'United States'
+  'Côte d\'Ivoire': 'Ivory Coast',
+  'United States of America': 'United States',
+  'S. Sudan': 'South Sudan',
+  'Somaliland region': 'Somaliland'
 };
 
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
@@ -202,10 +187,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
 
     const rankings = calculateRankings(objArr);
-    //console.log(geoData);
+    console.log(geoData);
     console.log(objArr, geoData.map(d => [d.properties.name, d.id]), rankings);
-    //console.log(geoData.filter(x => x.properties.name === "Somaliland"));
-    //console.log(Object.values(objArr[2015]).filter(x => x.country === "Somaliland"));
     
     const width = 960;
     const height = 700;
@@ -213,23 +196,11 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     svg.attr('height', height)
        .attr('width', width);
 
-    
-
-
     const projection = d3.geoNaturalEarth1()
                          .scale(170)
                          .translate([width / 2, height / 2]);
 
     const pathGenerator = d3.geoPath().projection(projection);
-
-    const colorRanges = {
-      'hRank': ['#0DFE5A', '#C41010'],
-      'econ': ['#081C15','white'],
-      'family': ['#7161ef', 'white'],
-      'trust': ['#03045E', 'white'],
-      'freedom': ['#7161ef', 'white'],
-      'generosity': ['#f15152', 'white']
-    };
 
     svg.append('path')
        .attr('class', 'sphere')
@@ -247,6 +218,16 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     let curYear = '2015';
     let curMetric  = 'hRank';
+
+    const colorRanges = {
+      'hRank': ['#0DFE5A', '#C41010'],
+      'econ': ['#081C15','white'],
+      'family': ['#7161ef', 'white'],
+      'trust': ['#03045E', 'white'],
+      'freedom': ['#7161ef', 'white'],
+      'generosity': ['#f15152', 'white']
+    };
+
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
