@@ -139,35 +139,18 @@ function calculateRankings(obj) {
 }
 
 function tooltipText(objArr, rankings, year, country) {
-  //console.log(country);
-  // let surveyData = Object.values(objArr[year]).filter(x => x.id === country.id);
-  // if (surveyData[0]){
-  //   let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
-  //   let length = rankings[year]['econ'].length;
-  //   //let t = `${surveyData[0].country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
-  //   let t = `${country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
-  //   rankedMetrics.forEach((metric) => {
-  //     curRank = rankings[year][metric].indexOf(country.id) + 1;
-  //     t += `${metric} rank: ${curRank} of ${length}\n`;
-  //   });
-  //   console.log(t.trim());
-  //   return t.trim();
-  // }
-  //console.log(country, country.id);
-  let validCountry = Object.values(objArr[year]).filter(x => x.id === country.id);
-  if (validCountry[0]) {
+  let surveyData = Object.values(objArr[year]).filter(x => x.id === country.id);
+  if (surveyData[0]){
     let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
-    //let t = `${surveyData[0].country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
-    let t = `${validCountry[0].country}\nHappiness Rank: ${rankings[year]['hRank'].indexOf(country.id) + 1} of ${length}\n`;
+    let t = `${surveyData[0].country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
     rankedMetrics.forEach((metric) => {
       curRank = rankings[year][metric].indexOf(country.id) + 1;
       t += `${metric} rank: ${curRank} of ${length}\n`;
-    })
-    //console.log(t.trim());
+    });
     return t.trim();
-  }  
-  else { return country.name }
+  }
+  else { return country.properties.name }
 }
 //Countries not loading path
 //Zimbabwe
@@ -222,44 +205,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     let curYear = '2015';
     let curMetric  = 'hRank';
 
-    let toolTip = d3.select('#mapDiv')
-    .append('div')
-    .attr("class", "tooltip")
-      .style("opacity", 0)
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px")
-      .style("pointer-events", "none");
-
-    let mouseover = function(d) {
-      toolTip
-        .style("opacity", .9)
-      // d3.select(this)
-      //   .style("stroke", "black")
-      //   .style("opacity", 1)
-    }
-
-    let mousemove = function(d) {
-      console.log(d, JSON.stringify(d));
-      toolTip
-        .style("opacity", .9)
-        .html(tooltipText(objArr, rankings, curYear, d.srcElement))
-        // .style("left", d3.event.pageX + "px")
-        // .style("top", d3.event.pageY + "px")
-        .style("left", (d.x + 70) + "px")
-        .style("top", d.y + "px")
-    }
-
-    let mouseleave = function(d) {
-      toolTip
-        .style("opacity", 0)
-      d3.select(this)
-        .style("stroke", "black")
-        .style("opacity", 1)
-    }
-
     svg.append('path')
        .attr('class', 'sphere')
        .attr('d', pathGenerator({type: 'Sphere'}));
@@ -272,12 +217,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .attr('d', d => pathGenerator(d))
          .attr('id', d => d.id)
          .attr('name', d => d.properties.name)
-       .on('mouseover', mouseover)
-       .on('mousemove', mousemove)
-       .on('mouseout', mouseleave);
-
-      //  .append('title')
-      //    .text(d => tooltipText(objArr, rankings, 2015, d));
+       .append('title')
+         .text(d => tooltipText(objArr, rankings, 2015, d));
        
 
     const colorRanges = {
