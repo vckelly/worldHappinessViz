@@ -94,13 +94,16 @@ async function convertToObject(func, filename, year) {
   myObj['year'] = year;
   y.forEach((row) => {
     if (Object.keys(nameVariances).includes(row['country'])) {
-      myObj[nameVariances[row['country']]] = row;
+      row['country'] = nameVariances[row['country']];
     }
-    else {
-      myObj[row['country']] = row;
-    }
+    myObj[row['country']] = row;
   })
   return myObj;
+};
+
+function calculateColorScale(objArr, rankings, scale, curYear, curMetric, country) {
+  let surveyData = Object.values(objArr[curYear]).filter(x => x.id === country.id);
+  return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(country.id) + 1) : 'grey';
 };
 
 let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015)
@@ -234,7 +237,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                   .domain([1, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
 
-    //TODO: Create own func for creating correct country fill color
     d3.selectAll('.country')
       .attr('fill', d => {
         let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
@@ -253,10 +255,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .transition()
         .duration(750)
         .ease(d3.easeBackIn)
-        .attr('fill', d => {
-          let surveyData = Object.values(objArr[newYear]).filter(x => x.id === d.id);
-          return surveyData[0] ? scale(rankings[newYear][curMetric].indexOf(d.id) + 1) : 'grey';
-        });
+        .attr('fill', d =>  calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
 
     const getMetric = document.querySelector('#metrics');
@@ -271,10 +270,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .transition()
         .duration(1000)
         .ease(d3.easeCubicInOut)
-        .attr('fill', d => {
-          let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-          return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(d.id) + 1) : 'grey';
-        });
+        .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
 }).catch((e) => console.log(e));
 
