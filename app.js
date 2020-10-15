@@ -87,7 +87,8 @@ function parse2019(filename) {
 async function convertToObject(func, filename, year) {
   const nameVariances = {
     'Congo (Kinshasa)': 'Democratic Republic of the Congo',
-    'Congo (Brazzaville)': 'Congo'
+    'Congo (Brazzaville)': 'Congo',
+    'Somaliland region': 'Somaliland'
   }
   let myObj = new Object();
   let y = await func(filename);
@@ -100,6 +101,24 @@ async function convertToObject(func, filename, year) {
   })
   return myObj;
 };
+
+const metricExplanations = {
+  'hRank': 'Happiness Rank', 
+  'econ': 'GDP per Capita', 
+  'family': 'The family metric is the national average of the binary responses (0=no, 1=yes)\n\
+            to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
+            or friends you can count on to help you whenever you need them, or not?\"', 
+  'health': 'The health metric is a time series of healthy life expectancy at birth based on \n\
+            data from the World Health Organization.', 
+  'trust': 'The trust metric represents perceptions of corruption in government (business corruption\n\
+            is also used in lieu of government data) based on the answers to the Gallup World Poll questions\n\
+            \"Is corruption widespread throughout the government or not?\" and \"Is corruption widespread throughout\n\
+            business or not?\"', 
+  'freedom': 'The freedom metric represents freedom to make life choices based on the national average of binary responses\n\
+              to the Gallup World Poll question \"Are you satisfied or dissatisfied with your freedom to choose what you do with your life?\"', 
+  'generosity': 'The generosity metric is the residual of regressing the national average of Gallup World Poll responses to the \n\
+                 question \"Have you donated money to a charity in the past month?\" on GDP per capita.' 
+}
 
 function calculateColorScale(objArr, rankings, scale, curYear, curMetric, country) {
   let surveyData = Object.values(objArr[curYear]).filter(x => x.id === country.id);
@@ -121,7 +140,7 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
 
 function calculateRankings(obj) {
   let rankings = {};
-  let rankedMetrics = ['hRank', 'econ', 'family', 'trust', 'freedom', 'generosity'];
+  let rankedMetrics = ['hRank', 'econ', 'family', 'health', 'trust', 'freedom', 'generosity'];
   [2015, 2016, 2017, 2018, 2019].forEach((year) => {
     rankings[year] = {};
     let curYear = Object.values(obj[year]);
@@ -144,7 +163,7 @@ function calculateRankings(obj) {
 function tooltipText(objArr, rankings, year, country) {
   let surveyData = Object.values(objArr[year]).filter(x => x.id === country.id);
   if (surveyData[0]){
-    let rankedMetrics = ['econ', 'family', 'trust', 'freedom', 'generosity'];
+    let rankedMetrics = ['econ', 'family', 'trust', 'health', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
     let t = `${surveyData[0].country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
     rankedMetrics.forEach((metric) => {
@@ -155,8 +174,6 @@ function tooltipText(objArr, rankings, year, country) {
   }
   else { return country.properties.name }
 }
-//Countries not loading path
-//Zimbabwe
 
 const countryNameVariances = {
   'Central African Rep.': 'Central African Republic',
@@ -167,7 +184,8 @@ const countryNameVariances = {
   'Côte d\'Ivoire': 'Ivory Coast',
   'United States of America': 'United States',
   'S. Sudan': 'South Sudan',
-  'Somaliland region': 'Somaliland'
+  'Somaliland region': 'Somaliland',
+  'Somaliland Region': 'Somaliland'
 };
 
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
@@ -177,13 +195,14 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       if (Object.keys(countryNameVariances).includes(country.properties.name)) {
         country.properties.name = countryNameVariances[country.properties.name];
       };
+      if (country.properties.name === 'Somaliland') { country.id = '1000' };
     });
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
         if (key !== 'year') {
           let geoResult = geoData.filter(x => key === x.properties.name);
           if (geoResult.length > 0) {
-            objArr[year][key]["id"] = geoResult[0].id;
+            objArr[year][key]['id'] = geoResult[0].id;
           }
         }
       };
@@ -207,13 +226,16 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     let curYear = '2015';
     let curMetric  = 'hRank';
+    const getText = document.querySelector('#metricSummary');
+    // getText.setAttribute("innerHTML", metricExplanations[curMetric]);
+    getText.innerHTML = metricExplanations[curMetric];
 
     svg.append('path')
        .attr('class', 'sphere')
        .attr('d', pathGenerator({type: 'Sphere'}));
 
     svg.selectAll('path')
-       .data(geoData)
+       .data(geoData.reverse())
        .enter()
        .append('path')
          .attr('class', 'country')
@@ -221,16 +243,16 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .attr('id', d => d.id)
          .attr('name', d => d.properties.name)
        .append('title')
-         .text(d => tooltipText(objArr, rankings, curYear, d));
-       
+         .text(d => tooltipText(objArr, rankings, curYear, d));       
 
     const colorRanges = {
       'hRank': ['#0DFE5A', '#C41010'],
-      'econ': ['#081C15','white'],
-      'family': ['#7161ef', 'white'],
+      'econ': ['#143601','white'],
+      'family': ['#431259', 'white'],
       'trust': ['#03045E', 'white'],
-      'freedom': ['#7161ef', 'white'],
-      'generosity': ['#f15152', 'white']
+      'freedom': ['#fa7921', 'white'],
+      'generosity': ['#f15152', 'white'],
+      'health': ['#9a031e', 'white']
     };
 
     let scale = d3.scaleLinear()
@@ -257,6 +279,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     const getMetric = document.querySelector('#metrics');
     getMetric.addEventListener('change', (event) => {
       curMetric = event.target.value;
+      getText.innerHTML = metricExplanations[curMetric];
       scale = d3.scaleLinear()
                 .domain([1, Object.values(objArr[curYear]).length + 1])
                 .range(colorRanges[curMetric]);
