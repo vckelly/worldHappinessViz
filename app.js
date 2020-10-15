@@ -221,7 +221,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .attr('id', d => d.id)
          .attr('name', d => d.properties.name)
        .append('title')
-         .text(d => tooltipText(objArr, rankings, 2015, d));
+         .text(d => tooltipText(objArr, rankings, curYear, d));
        
 
     const colorRanges = {
@@ -238,30 +238,25 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                   .range(colorRanges[curMetric]);
 
     d3.selectAll('.country')
-      .attr('fill', d => {
-        let surveyData = Object.values(objArr[curYear]).filter(x => x.id === d.id);
-        return surveyData[0] ? scale(surveyData[0]['hRank']) : 'grey';
-    });
+      .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
 
     const getYear = document.querySelector('#years');
     getYear.addEventListener('change', (event) => {
-      let newYear = event.target.value;
-      curYear = newYear;
+      curYear = event.target.value;
       svg.selectAll('path')
          .select('title')
-           .text(d => tooltipText(objArr, rankings, newYear, d));
+           .text(d => tooltipText(objArr, rankings, curYear, d));
     
       d3.selectAll('.country')
         .transition()
         .duration(750)
         .ease(d3.easeBackIn)
-        .attr('fill', d =>  calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
+        .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
 
     const getMetric = document.querySelector('#metrics');
     getMetric.addEventListener('change', (event) => {
-      let newMetric = event.target.value;
-      curMetric = newMetric;
+      curMetric = event.target.value;
       scale = d3.scaleLinear()
                 .domain([1, Object.values(objArr[curYear]).length + 1])
                 .range(colorRanges[curMetric]);
