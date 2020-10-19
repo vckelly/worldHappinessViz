@@ -1,12 +1,17 @@
 * {
   font-family: 'Source Sans Pro', sans-serif;
+  
 }
 
 body {
-  margin: 0;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
+#mapDiv {
+  justify-content: center;
+  margin-left: 10%;
+}
 .sphere{
   fill: lightskyblue;
 }
@@ -20,7 +25,25 @@ body {
   fill: yellow;
 }
 
-select {
-  margin: auto;
-  width: 6%;
+#selectionData {
+  align-items: flex-end;
 }
+
+select {
+  padding: 5px;
+}
+
+#years {
+  margin: auto;
+}
+
+#metrics {
+  margin: auto;
+  justify-content: center;
+}
+
+#metricSummary {
+  margin: 2%;
+  border: 2%;
+}
+
