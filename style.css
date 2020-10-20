@@ -10,7 +10,7 @@ body {
 
 #mapDiv {
   justify-content: center;
-  margin-left: 10%;
+  margin-left: 13%;
 }
 .sphere{
   fill: lightskyblue;
@@ -18,7 +18,7 @@ body {
 
 .country {
   stroke: black;
-  stroke-opacity: 0.4;
+  stroke-width: .12px;
 }
 
 .country:hover {

@@ -10,24 +10,26 @@
   <div id="mapDiv">
     <svg id="map"></svg>
   </div>
+  <div id='selectionData'>
     <select id="years">
-    <option value="2015">2015</option>
-    <option value="2016">2016</option>
-    <option value="2017">2017</option>
-    <option value="2018">2018</option>
-    <option value="2019">2019</option>
-  </select>
-  <select id="metrics">
-    <option value="hRank">Happiness</option>
-    <option value="econ">Economic</option>
-    <option value="family">Family</option>
-    <option value="health">Health</option>
-    <option value="trust">Trust</option>
-    <option value="freedom">Freedom</option>
-    <option value="generosity">Generosity</option>
-  </select>
-  <p id="metricSummary"></p>
-  <script src="https://d3js.org/d3.v6.js"></script>
+      <option value="2015">2015</option>
+      <option value="2016">2016</option>
+      <option value="2017">2017</option>
+      <option value="2018">2018</option>
+      <option value="2019">2019</option>
+    </select>
+    <select id="metrics">
+      <option value="hRank">Happiness</option>
+      <option value="econ">Economic</option>
+      <option value="family">Family</option>
+      <option value="health">Health</option>
+      <option value="trust">Trust</option>
+      <option value="freedom">Freedom</option>
+      <option value="generosity">Generosity</option>
+    </select>
+    <p id="metricSummary"></p>
+  </div>  
+  <script src="https://unpkg.com/d3@5.6.0/dist/d3.min.js"></script>
   <script src="https://unpkg.com/topojson@3"></script>
   <script src="app.js"></script>
 </body>

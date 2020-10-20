@@ -102,24 +102,6 @@ async function convertToObject(func, filename, year) {
   return myObj;
 };
 
-const metricExplanations = {
-  'hRank': 'Happiness Rank', 
-  'econ': 'GDP per Capita', 
-  'family': 'The family metric is the national average of the binary responses (0=no, 1=yes)\n\
-            to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
-            or friends you can count on to help you whenever you need them, or not?\"', 
-  'health': 'The health metric is a time series of healthy life expectancy at birth based on \n\
-            data from the World Health Organization.', 
-  'trust': 'The trust metric represents perceptions of corruption in government (business corruption\n\
-            is also used in lieu of government data) based on the answers to the Gallup World Poll questions\n\
-            \"Is corruption widespread throughout the government or not?\" and \"Is corruption widespread throughout\n\
-            business or not?\"', 
-  'freedom': 'The freedom metric represents freedom to make life choices based on the national average of binary responses\n\
-              to the Gallup World Poll question \"Are you satisfied or dissatisfied with your freedom to choose what you do with your life?\"', 
-  'generosity': 'The generosity metric is the residual of regressing the national average of Gallup World Poll responses to the \n\
-                 question \"Have you donated money to a charity in the past month?\" on GDP per capita.' 
-}
-
 function calculateColorScale(objArr, rankings, scale, curYear, curMetric, country) {
   let surveyData = Object.values(objArr[curYear]).filter(x => x.id === country.id);
   return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(country.id) + 1) : 'grey';
@@ -175,6 +157,24 @@ function tooltipText(objArr, rankings, year, country) {
   else { return country.properties.name }
 }
 
+const metricExplanations = {
+  'hRank': 'Happiness Rank', 
+  'econ': 'GDP per Capita', 
+  'family': 'The family metric is the national average of the binary responses (0=no, 1=yes)\n\
+            to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
+            or friends you can count on to help you whenever you need them, or not?\"', 
+  'health': 'The health metric is a time series of healthy life expectancy at birth based on \n\
+            data from the World Health Organization.', 
+  'trust': 'The trust metric represents perceptions of corruption in government (business corruption\n\
+            is also used in lieu of government data) based on the answers to the Gallup World Poll questions\n\
+            \"Is corruption widespread throughout the government or not?\" and \"Is corruption widespread throughout\n\
+            business or not?\"', 
+  'freedom': 'The freedom metric represents freedom to make life choices based on the national average of binary responses\n\
+              to the Gallup World Poll question \"Are you satisfied or dissatisfied with your freedom to choose what you do with your life?\"', 
+  'generosity': 'The generosity metric is the residual of regressing the national average of Gallup World Poll responses to the \n\
+                 question \"Have you donated money to a charity in the past month?\" on GDP per capita.' 
+}
+
 const countryNameVariances = {
   'Central African Rep.': 'Central African Republic',
   'Dem. Rep. Congo': 'Democratic Republic of the Congo',
@@ -186,6 +186,16 @@ const countryNameVariances = {
   'S. Sudan': 'South Sudan',
   'Somaliland region': 'Somaliland',
   'Somaliland Region': 'Somaliland'
+};
+
+const colorRanges = {
+  'hRank': ['#0DFE5A', '#C41010'],
+  'econ': ['#143601','white'],
+  'family': ['#431259', 'white'],
+  'trust': ['#03045E', 'white'],
+  'freedom': ['#fa7921', 'white'],
+  'generosity': ['#f15152', 'white'],
+  'health': ['#9a031e', 'white']
 };
 
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
@@ -214,7 +224,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     
     const width = 960;
     const height = 700;
-    let svg = d3.select('svg');
+    const svg = d3.select('svg');
     svg.attr('height', height)
        .attr('width', width);
 
@@ -224,17 +234,22 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     const pathGenerator = d3.geoPath().projection(projection);
 
-    let curYear = '2015';
-    let curMetric  = 'hRank';
-    const getText = document.querySelector('#metricSummary');
-    // getText.setAttribute("innerHTML", metricExplanations[curMetric]);
-    getText.innerHTML = metricExplanations[curMetric];
+    const g = svg.append('g');
 
-    svg.append('path')
+    g.append('path')
        .attr('class', 'sphere')
        .attr('d', pathGenerator({type: 'Sphere'}));
 
-    svg.selectAll('path')
+    svg.call(d3.zoom().on('zoom', () => {
+      g.attr('transform', d3.event.transform);
+    }));
+
+    let curYear = '2015';
+    let curMetric  = 'hRank';
+    const getText = document.querySelector('#metricSummary');
+    getText.innerHTML = metricExplanations[curMetric];    
+
+    g.selectAll('path')
        .data(geoData.reverse())
        .enter()
        .append('path')
@@ -244,16 +259,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
          .attr('name', d => d.properties.name)
        .append('title')
          .text(d => tooltipText(objArr, rankings, curYear, d));       
-
-    const colorRanges = {
-      'hRank': ['#0DFE5A', '#C41010'],
-      'econ': ['#143601','white'],
-      'family': ['#431259', 'white'],
-      'trust': ['#03045E', 'white'],
-      'freedom': ['#fa7921', 'white'],
-      'generosity': ['#f15152', 'white'],
-      'health': ['#9a031e', 'white']
-    };
 
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length + 1])
