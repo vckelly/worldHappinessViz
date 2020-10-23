@@ -241,9 +241,11 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .attr('class', 'sphere')
        .attr('d', pathGenerator({type: 'Sphere'}));
 
-    svg.call(d3.zoom().on('zoom', () => {
-      g.attr('transform', d3.event.transform);
-    }));
+    svg.call(d3.zoom()
+               .scaleExtent([1, 30])
+               .translateExtent([[width*-.25, height*-.25], [width*1.25, height*1.25]])
+               .on('zoom', () => {
+                g.attr('transform', d3.event.transform);}));
 
     let curYear = '2015';
     let curMetric  = 'hRank';
@@ -251,15 +253,15 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getText.innerHTML = metricExplanations[curMetric];    
 
     g.selectAll('path')
-       .data(geoData.reverse())
-       .enter()
-       .append('path')
-         .attr('class', 'country')
-         .attr('d', d => pathGenerator(d))
-         .attr('id', d => d.id)
-         .attr('name', d => d.properties.name)
-       .append('title')
-         .text(d => tooltipText(objArr, rankings, curYear, d));       
+        .data(geoData.reverse())
+        .enter()
+        .append('path')
+          .attr('class', 'country')
+          .attr('d', d => pathGenerator(d))
+          .attr('id', d => d.id)
+          .attr('name', d => d.properties.name)
+        .append('title')
+          .text(d => tooltipText(objArr, rankings, curYear, d));       
 
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length + 1])
@@ -272,8 +274,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getYear.addEventListener('change', (event) => {
       curYear = event.target.value;
       svg.selectAll('path')
-         .select('title')
-           .text(d => tooltipText(objArr, rankings, curYear, d));
+          .select('title')
+            .text(d => tooltipText(objArr, rankings, curYear, d));
     
       d3.selectAll('.country')
         .transition()
