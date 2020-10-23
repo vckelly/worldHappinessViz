@@ -150,7 +150,8 @@ function tooltipText(objArr, rankings, year, country) {
     let t = `${surveyData[0].country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
     rankedMetrics.forEach((metric) => {
       curRank = rankings[year][metric].indexOf(country.id) + 1;
-      t += `${metric} rank: ${curRank} of ${length}\n`;
+      let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
+      t += `${upperCaseMetric} Rank: ${curRank} of ${length}\n`;
     });
     return t.trim();
   }
