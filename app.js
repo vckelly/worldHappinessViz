@@ -147,7 +147,7 @@ function tooltipText(objArr, rankings, year, country) {
   if (surveyData[0]){
     let rankedMetrics = ['econ', 'family', 'trust', 'health', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
-    let t = `${surveyData[0].country}\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
+    let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
     rankedMetrics.forEach((metric) => {
       curRank = rankings[year][metric].indexOf(country.id) + 1;
       let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
@@ -207,6 +207,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         country.properties.name = countryNameVariances[country.properties.name];
       };
       if (country.properties.name === 'Somaliland') { country.id = '1000' };
+      if (country.properties.name === 'Kosovo') { country.id = '999' };
     });
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
@@ -218,7 +219,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
       };
     });
-
+    
     const rankings = calculateRankings(objArr);
     console.log(geoData);
     console.log(objArr, geoData.map(d => [d.properties.name, d.id]), rankings);
@@ -251,6 +252,25 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     let curMetric  = 'hRank';
     const getText = document.querySelector('#metricSummary');
     getText.innerHTML = metricExplanations[curMetric];    
+
+    let legendContainerSettings = {
+      x: width * 0.35,
+      y: height * 0.85,
+      width: 350,
+      height: 90,
+      roundX: 10,
+      roundY: 10
+    };
+
+    let legendContainer = svg.append('rect')
+                              .attr('x', legendContainerSettings.x)
+                              .attr('y', legendContainerSettings.y)
+                              .attr('rx', legendContainerSettings.roundX)
+                              .attr('ry', legendContainerSettings.roundY)
+                              .attr('width', legendContainerSettings.width)
+                              .attr('height', legendContainerSettings.height)
+                              .attr('id', 'legend-container');
+
 
     g.selectAll('path')
         .data(geoData.reverse())
