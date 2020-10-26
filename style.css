@@ -10,7 +10,7 @@ body {
 }
 
 #map {
-  margin: 15%;
+  margin: 10%;
   outline-style: solid;
   outline-color: black;
   outline-width: 1px;
@@ -22,9 +22,10 @@ body {
 .country {
   stroke: black;
   stroke-width: .12px;
+  transition: fill 0.5s ease-in-out;
 }
 
-.country:hover {
+.country:hover, .country:focus {
   fill: yellow;
 }
 
@@ -36,6 +37,7 @@ body {
 select {
   padding: 5px;
 }
+
 
 #years {
   margin: auto;
