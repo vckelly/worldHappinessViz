@@ -147,11 +147,11 @@ function tooltipText(objArr, rankings, year, country) {
   if (surveyData[0]){
     let rankedMetrics = ['econ', 'family', 'trust', 'health', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
-    let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} of ${length}\n`;
+    let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n`;
     rankedMetrics.forEach((metric) => {
       curRank = rankings[year][metric].indexOf(country.id) + 1;
       let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
-      t += `${upperCaseMetric} Rank: ${curRank} of ${length}\n`;
+      t += `${upperCaseMetric} Rank: ${curRank} / ${length}\n`;
     });
     return t.trim();
   }
@@ -224,8 +224,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     console.log(geoData);
     console.log(objArr, geoData.map(d => [d.properties.name, d.id]), rankings);
     
-    const width = 960;
-    const height = 700;
+    const width = 920;
+    const height = 640;
     const svg = d3.select('svg');
     svg.attr('height', height)
        .attr('width', width);
@@ -253,23 +253,23 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     const getText = document.querySelector('#metricSummary');
     getText.innerHTML = metricExplanations[curMetric];    
 
-    let legendContainerSettings = {
-      x: width * 0.35,
-      y: height * 0.85,
-      width: 350,
-      height: 90,
-      roundX: 10,
-      roundY: 10
-    };
+    // let legendContainerSettings = {
+    //   x: width * 0.35,
+    //   y: height * 0.85,
+    //   width: 350,
+    //   height: 90,
+    //   roundX: 10,
+    //   roundY: 10
+    // };
 
-    let legendContainer = svg.append('rect')
-                              .attr('x', legendContainerSettings.x)
-                              .attr('y', legendContainerSettings.y)
-                              .attr('rx', legendContainerSettings.roundX)
-                              .attr('ry', legendContainerSettings.roundY)
-                              .attr('width', legendContainerSettings.width)
-                              .attr('height', legendContainerSettings.height)
-                              .attr('id', 'legend-container');
+    // let legendContainer = svg.append('rect')
+    //                           .attr('x', legendContainerSettings.x)
+    //                           .attr('y', legendContainerSettings.y)
+    //                           .attr('rx', legendContainerSettings.roundX)
+    //                           .attr('ry', legendContainerSettings.roundY)
+    //                           .attr('width', legendContainerSettings.width)
+    //                           .attr('height', legendContainerSettings.height)
+    //                           .attr('id', 'legend-container');
 
 
     g.selectAll('path')

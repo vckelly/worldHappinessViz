@@ -7,13 +7,16 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background-color: lightgray;
 }
 
 #map {
-  margin: 10%;
-  outline-style: solid;
+  display: block;
+  margin: auto;
+  /* outline-style: solid;
   outline-color: black;
-  outline-width: 1px;
+  outline-width: 1px; */
+  background-color: white;
 }
 .sphere{
   fill: lightskyblue;
@@ -22,22 +25,67 @@ body {
 .country {
   stroke: black;
   stroke-width: .12px;
-  transition: fill 0.5s ease-in-out;
+  transition: fill 0.25s ease-in;
 }
 
 .country:hover, .country:focus {
   fill: yellow;
 }
 
-#selectionData {
-  align-items: flex-end;
-  justify-content: center;
-}
 
 select {
-  padding: 5px;
+  padding: 1em 4em 1em 1.5em;
+  background: #4d5061;
+  color: white;
+  border: 0;
 }
 
+.selectionData {
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  position: relative;
+}
+
+.custom-select {
+  position: absolute;
+  display: block;
+  top: 0;
+  right: 0;
+  background:#3b3c47;
+  height: 100%;
+  width: 3rem;
+  pointer-events: none;
+}
+
+.custom-select::before,
+.custom-select::after {
+  --size: 1em;
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-arrow::before{
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-bottom: var(--size) solid red;
+
+  top: 35%;
+}
+
+.custom-arrow::after{
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-top: var(--size) solid red;
+
+  top: 60%;
+}
 
 #years {
   margin: auto;
@@ -45,12 +93,14 @@ select {
 
 #metrics {
   margin: auto;
-  justify-content: center;
 }
 
 #metricSummary {
+  display: flex;
+  justify-content: center;
   margin: 2%;
   border: 2%;
+  background-color: white;
 }
 
 #legend-container {
