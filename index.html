@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>World Happiness Report</title>
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -12,26 +13,30 @@
   </div>
   <div id="colorRange"></div>
   <p id="metricSummary"></p>
-  <div class='selectionData'>
-    <select id="years">
-      <option value="2015">2015</option>
-      <option value="2016">2016</option>
-      <option value="2017">2017</option>
-      <option value="2018">2018</option>
-      <option value="2019">2019</option>
-    </select>
-    <span class="custom-select"></span>
-    <select id="metrics">
-      <option value="hRank">Happiness</option>
-      <option value="econ">Economic</option>
-      <option value="family">Family</option>
-      <option value="health">Health</option>
-      <option value="trust">Trust</option>
-      <option value="freedom">Freedom</option>
-      <option value="generosity">Generosity</option>
-    </select>
-    <span class="custom-select"></span>
-  </div>  
+  <div class="full-select">
+    <div class="custom-select">
+      <select id="years">
+        <option value="2015">2015</option>
+        <option value="2016">2016</option>
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+      </select>
+      <span class="custom-arrow"></span>
+    </div>
+    <div class="custom-select"></div>
+      <select id="metrics">
+        <option value="hRank">Happiness</option>
+        <option value="econ">Economic</option>
+        <option value="family">Family</option>
+        <option value="health">Health</option>
+        <option value="trust">Trust</option>
+        <option value="freedom">Freedom</option>
+        <option value="generosity">Generosity</option>
+      </select>
+      <span class="custom-arrow"></span>
+    </div>  
+  </div>
   <script src="https://unpkg.com/d3@5.6.0/dist/d3.min.js"></script>
   <script src="https://unpkg.com/topojson@3"></script>
   <script src="app.js"></script>

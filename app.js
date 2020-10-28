@@ -299,7 +299,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     
       d3.selectAll('.country')
         .transition()
-        .duration(750)
+        .duration(800)
         .ease(d3.easeBackIn)
         .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });

@@ -4,9 +4,11 @@
 }
 
 body {
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; */
+  display: grid;
+  place-items: center;
   background-color: lightgray;
 }
 
@@ -34,77 +36,74 @@ body {
 
 
 select {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
   padding: 1em 4em 1em 1.5em;
   background: #4d5061;
   color: white;
   border: 0;
 }
 
-.selectionData {
+.full-select {
   display: flex;
-  justify-content: center;
-  background-color: white;
-  position: relative;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 .custom-select {
+  position: relative;
+  background-color: white; 
+}
+
+.custom-arrow {
   position: absolute;
-  display: block;
   top: 0;
   right: 0;
+  display: block;
   background:#3b3c47;
   height: 100%;
-  width: 3rem;
+  width: 3em;
   pointer-events: none;
 }
 
-.custom-select::before,
-.custom-select::after {
-  --size: 1em;
+.custom-arrow::before,
+.custom-arrow::after {
+  --size: .5em;
+  
   content: "";
   position: absolute;
   width: 0;
   height: 0;
 
   left: 50%;
-  top: 50%;
   transform: translate(-50%, -50%);
 }
 
-.custom-arrow::before{
+.custom-arrow::before {
   border-left: var(--size) solid transparent;
   border-right: var(--size) solid transparent;
-  border-bottom: var(--size) solid red;
+  border-bottom: var(--size) solid rgba(255, 255, 255, 0.5);
 
-  top: 35%;
+  top: 40%;
 }
 
-.custom-arrow::after{
+.custom-arrow::after {
   border-left: var(--size) solid transparent;
   border-right: var(--size) solid transparent;
-  border-top: var(--size) solid red;
+  border-top: var(--size) solid rgba(255, 255, 255, 0.5);
 
   top: 60%;
 }
 
-#years {
+/* #years {
   margin: auto;
 }
 
 #metrics {
   margin: auto;
-}
+} */
 
 #metricSummary {
-  display: flex;
-  justify-content: center;
   margin: 2%;
   border: 2%;
   background-color: white;
-}
-
-#legend-container {
-  background-color: white;
-  outline-style: double;
-  opacity: 0.2;
 }
