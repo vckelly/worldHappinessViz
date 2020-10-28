@@ -224,7 +224,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     console.log(geoData);
     console.log(objArr, geoData.map(d => [d.properties.name, d.id]), rankings);
     
-    const width = 920;
+    const width = 940;
     const height = 640;
     const svg = d3.select('svg');
     svg.attr('height', height)
@@ -314,7 +314,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
       d3.selectAll('.country')
         .transition()
-        .duration(1000)
+        .duration(800)
         .ease(d3.easeCubicInOut)
         .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });

@@ -12,12 +12,45 @@ body {
   background-color: lightgray;
 }
 
+.page-header {
+  background-image: url(../img/mi-pham-FtZL0r4DZYk-unsplash\ \(1\).jpg);
+  /* background-repeat: no-repeat;
+  background-size: 100% 100%;
+  display: block;
+  margin: 0 auto;
+  width: 1024px; */
+  text-align: center;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-attachment: fixed;
+	position: relative;
+	overflow: hidden;
+	/* border-radius: 0 0 85% 85% / 30%; */
+}
+
+.page-header .overlay{
+	max-width: 100%;
+	height: auto;
+	padding: 50px;
+	color: #FFF;
+	text-shadow: 1px 1px 1px #333;	
+}
+
+h1 {
+	font-family: 'Dancing Script', cursive;
+	font-size: 80px;
+	margin-bottom: 30px;
+}
+
+h3, p {
+	font-family: 'Open Sans', sans-serif;
+	margin-bottom: 30px;
+}
+
 #map {
   display: block;
   margin: auto;
-  /* outline-style: solid;
-  outline-color: black;
-  outline-width: 1px; */
   background-color: white;
 }
 .sphere{
@@ -44,13 +77,15 @@ select {
 }
 
 .full-select {
+  position: relative;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
 .custom-select {
   position: relative;
+  margin: auto;
   background-color: white; 
 }
 
