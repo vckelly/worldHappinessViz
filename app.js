@@ -133,7 +133,7 @@ function calculateRankings(obj) {
         curMetric.sort((a, b) => (parseInt(a[metric]) < parseInt(b[metric]) ? -1 : 1));
       }
       else{
-        curMetric.sort((a, b) => (parseFloat(a[metric]) >= parseFloat(b[metric]) ? -1 : 1));
+        curMetric.sort((a, b) => (parseFloat(a[metric]) > parseFloat(b[metric]) ? -1 : 1));
       }
       curMetric = curMetric.map((key) => key['id']);
       rankings[year][metric] = curMetric;
@@ -256,7 +256,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .attr('d', pathGenerator({type: 'Sphere'}));
 
     svg.call(d3.zoom()
-               .scaleExtent([1, 30])
+               .scaleExtent([1, 10])
                .translateExtent([[width*-.25, height*-.25], [width*1.25, height*1.25]])
                .on('zoom', () => {
                 g.attr('transform', d3.event.transform);}));
