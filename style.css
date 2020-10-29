@@ -9,11 +9,76 @@ body {
   justify-content: center; */
   display: grid;
   place-items: center;
-  background-color: lightgray;
+}
+
+h1 {
+	font-family: 'Dancing Script', cursive;
+	font-size: 80px;
+	margin-bottom: 30px;
+}
+
+h3, p {
+	font-family: 'Open Sans', sans-serif;
+	margin-bottom: 30px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* #map {
+  display: block;
+  margin: auto;
+  background-color: black;
+} */
+.sphere{
+  fill: lightskyblue;
+}
+
+.country {
+  stroke: black;
+  stroke-width: .12px;
+  transition: fill 0.25s ease-in;
+}
+
+.country .title {
+  position: absolute;
+  top: 20px;
+  background: silver;
+  padding: 4px;
+  left: 0;
+  white-space: nowrap;
+}
+
+.country:hover, .country:focus {
+  fill: yellow;
+}
+
+.header-container {
+  padding: 0 2em;
+  max-width: 100em;
+  max-height: 100em;
+  margin: 0 auto;
 }
 
 .page-header {
-  background-image: url(../img/mi-pham-FtZL0r4DZYk-unsplash\ \(1\).jpg);
+  background-image: url(../img/crop-mi-pham-FtZL0r4DZYk-unsplash.jpg);
   /* background-repeat: no-repeat;
   background-size: 100% 100%;
   display: block;
@@ -35,36 +100,6 @@ body {
 	padding: 50px;
 	color: #FFF;
 	text-shadow: 1px 1px 1px #333;	
-}
-
-h1 {
-	font-family: 'Dancing Script', cursive;
-	font-size: 80px;
-	margin-bottom: 30px;
-}
-
-h3, p {
-	font-family: 'Open Sans', sans-serif;
-	margin-bottom: 30px;
-}
-
-#map {
-  display: block;
-  margin: auto;
-  background-color: white;
-}
-.sphere{
-  fill: lightskyblue;
-}
-
-.country {
-  stroke: black;
-  stroke-width: .12px;
-  transition: fill 0.25s ease-in;
-}
-
-.country:hover, .country:focus {
-  fill: yellow;
 }
 
 

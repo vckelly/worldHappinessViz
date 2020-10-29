@@ -8,16 +8,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="page-header">
-    <div class="overlay">
-      <h1>World Happiness...Visualized</h1>
-      <p>Each year, the Sustainable Development Solutions network publishes a report on the happiest countries in the world. 
-         Explore the results of these reports below.</p>
-    </div>
-  </header>
+  <div class="header-container">
+    <header class="page-header">
+      <div class="overlay">
+        <h1>World Happiness...Visualized</h1>
+        <p>Each year, the Sustainable Development Solutions network publishes a report on the happiest countries in the world. 
+          Explore the results of these reports below.</p>
+      </div>
+    </header>
+  </div>
   
-  <div id="mapDiv">
-    <svg id="map"></svg>
+  <div id="svg-container">
+    <!-- <svg id="svg-content" viewBox="0 100 600 600" preserveAspectRatio="xMidYMid meet"></svg> -->
+    <svg id="svg-content"></svg>
   </div>
   <div id="colorRange"></div>
   <p id="metricSummary"></p>
