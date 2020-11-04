@@ -191,7 +191,8 @@ const countryNameVariances = {
   'United States of America': 'United States',
   'S. Sudan': 'South Sudan',
   'Somaliland region': 'Somaliland',
-  'Somaliland Region': 'Somaliland'
+  'Somaliland Region': 'Somaliland',
+  'N. Cyprus': 'North Cyprus'
 };
 
 const colorRanges = {
@@ -213,6 +214,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       };
       if (country.properties.name === 'Somaliland') { country.id = '1000' };
       if (country.properties.name === 'Kosovo') { country.id = '999' };
+      if (country.properties.name === 'North Cyprus') { country.id = '998' };
     });
     [2015, 2016, 2017, 2018, 2019].forEach(year => {
       for (let key in objArr[year]) {
