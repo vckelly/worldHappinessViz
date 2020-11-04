@@ -38,27 +38,76 @@ h3, p {
 }
 
 .page-header {
-  background-image: url(../img/crop-mi-pham-FtZL0r4DZYk-unsplash.jpg);
+  /* background-image: url(../img/crop-mi-pham-FtZL0r4DZYk-unsplash.jpg); */
   position: relative;
   /* background-position: center; */
-  background-size: cover;
-  background-repeat: no-repeat;
-  overflow: hidden; 
+  
   font-family: "Montserrat", sans-serif;
   background-attachment: scroll;
 }
 
 .page-header .overlay{
+  display: flex;
+  direction: row;
+  flex-wrap: wrap;
+  /* flex-flow: row wrap;
+  align-items: stretch; */
 	max-width: 100%;
-	height: auto;
-	padding: 50px;
+  height: auto;
+  /* margin-bottom: 50px; */
+	/* padding: 50px; */
 	color: #FFF;
   text-shadow: 1px 1px 1px #333;	
   font-family: "Montserrat", sans-serif;
 }
 
+.first-block {
+  display: flex;
+  direction: row;
+  flex-wrap: wrap;
+  /* flex-flow: row wrap;
+  align-items: stretch; */
+	max-width: 100%;
+  height: auto;
+  margin-bottom: 50px;
+}
+
+.second-block {
+  display: flex;
+  direction: row;
+  flex-wrap: wrap;
+  /* flex-flow: row wrap;
+  align-items: stretch; */
+	max-width: 100%;
+  height: auto;
+}
+
+#first-img {
+  background-image: url(../img/crop-mi-pham-FtZL0r4DZYk-unsplash.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  object-fit: cover;
+  overflow: hidden; 
+  width: 50%;
+  height: auto;
+}
+
+#second-img {
+  background-image: url(../img/senjuti-kundu-JfolIjRnveY-unsplash.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  object-fit: contain;
+  overflow: hidden; 
+  width: 50%;
+  height: auto;
+}
+
 #happiness-title {
-  padding-left: 35%;
+  width: 50%;
+}
+
+#happiness-summary {
+  width: 50%;
 }
 
 .svg-wrapper {
@@ -90,11 +139,9 @@ h3, p {
 } */
 #svg-content {
   /* display: grid; */
-  border: .1rem solid black;
-  /* position: absolute; */
-  /* top: 0;
-  left: 0; */
-  box-shadow: 10px 5px 5px darkgrey;
+  border: .1rem solid lightgrey;
+  /* box-shadow: 10px 5px 5px darkgrey; */
+  box-shadow: 0 0 10px 5px darkgrey;
 }  
 
 .sphere{
