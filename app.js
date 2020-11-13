@@ -1,3 +1,5 @@
+import { colorLegend } from '/colorLegend.js';
+
 function parse2015(filename) {
   return d3.dsv(",", filename, function(d) {
     return {
@@ -149,7 +151,7 @@ function tooltipText(objArr, rankings, year, country) {
     let length = rankings[year]['econ'].length;
     let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n`;
     rankedMetrics.forEach((metric) => {
-      curRank = rankings[year][metric].indexOf(country.id) + 1;
+      let curRank = rankings[year][metric].indexOf(country.id) + 1;
       let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
       t += `${upperCaseMetric} Rank: ${curRank} / ${length}\n`;
     });
@@ -316,4 +318,3 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
 }).catch((e) => console.log(e));
-
