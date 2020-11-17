@@ -1,6 +1,7 @@
 export const colorLegend = (selection, props) => {
+  console.log(props);
   const {                      
-    colorScale,                
+    colorLegendScale,                
     circleRadius,
     spacing,                   
     textOffset,
@@ -9,7 +10,7 @@ export const colorLegend = (selection, props) => {
   
   const backgroundRect = selection.selectAll('rect')
     .data([null]);             
-  const n = colorScale.domain().length; 
+  const n = colorLegendScale.domain().length; 
   backgroundRect.enter().append('rect')
     .merge(backgroundRect)
       .attr('x', -circleRadius * 2)   
@@ -22,7 +23,7 @@ export const colorLegend = (selection, props) => {
   
 
   const groups = selection.selectAll('.tick')
-    .data(colorScale.domain());
+    .data(colorLegendScale.domain());
   const groupsEnter = groups
     .enter().append('g')
       .attr('class', 'tick');
@@ -36,7 +37,7 @@ export const colorLegend = (selection, props) => {
   groupsEnter.append('circle')
     .merge(groups.select('circle')) 
       .attr('r', circleRadius)
-      .attr('fill', colorScale);      
+      .attr('fill', colorLegendScale);      
   
   groupsEnter.append('text')
     .merge(groups.select('text'))   

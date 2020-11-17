@@ -197,6 +197,21 @@ const countryNameVariances = {
   'N. Cyprus': 'North Cyprus'
 };
 
+function calculateColorLegendValues(lengthOfYear, numDivisions) {
+  let res = [1];
+  let interval = lengthOfYear / numDivisions;
+  for (let i = 1; i < 8; i++) {
+    res.push(Math.floor(i * interval));
+  }
+  return res;
+};
+
+function calculateColorLegendColors(scale, arr) {
+  let res = [];
+  arr.forEach(val => res.push(scale(val)));
+  return res;
+};
+
 const colorRanges = {
   'hRank': ['#0DFE5A', '#C41010'],
   'econ': ['#143601','white'],
@@ -230,14 +245,23 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
     
     const rankings = calculateRankings(objArr);
-    console.log(geoData);
-    console.log(objArr, geoData.map(d => [d.properties.name, d.id]), rankings);
+    console.log('geoData', geoData);
+    console.log('objArr', objArr, geoData.map(d => [d.properties.name, d.id]), 'rankings', rankings);
+    //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
+    
+
     
     const width = 940;
     const height = 640;
     const svg = d3.select('svg');
     svg.attr('height', height)
        .attr('width', width);
+
+    
+    let curYear = '2015';
+    let curMetric  = 'hRank';
+    const getText = document.querySelector('#metricSummary');
+    getText.innerHTML = metricExplanations[curMetric];    
 
     // var svg = d3.select("div#svg-container")
     //   .append("svg")
@@ -255,6 +279,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     const g = svg.append('g');
 
+    const colorLegendG = svg.append('g')
+                            .attr('transform', `translate(40,310)`);
+
     g.append('path')
        .attr('class', 'sphere')
        .attr('d', pathGenerator({type: 'Sphere'}));
@@ -265,33 +292,45 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                .on('zoom', () => {
                 g.attr('transform', d3.event.transform);}));
 
-    let curYear = '2015';
-    let curMetric  = 'hRank';
-    const getText = document.querySelector('#metricSummary');
-    getText.innerHTML = metricExplanations[curMetric];    
-
+    
     g.selectAll('path')
-        .data(geoData.reverse())
-        .enter()
-        .append('path')
-          .attr('class', 'country')
-          .attr('d', d => pathGenerator(d))
-          .attr('id', d => d.id)
-          .attr('name', d => d.properties.name)
-        .append('title')
-          .text(d => tooltipText(objArr, rankings, curYear, d));       
+      .data(geoData.reverse())
+      .enter()
+      .append('path')
+        .attr('class', 'country')
+        .attr('d', d => pathGenerator(d))
+        .attr('id', d => d.id)
+        .attr('name', d => d.properties.name)
+      .append('title')
+        .text(d => tooltipText(objArr, rankings, curYear, d));       
 
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
 
+    let colorLegendScale = d3.scaleOrdinal();
+    let colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
+    colorLegendScale
+      .domain(['Best', 'Great', 'Better', 'Average', 'Worse than Average', 'Not Good', 'Worst'])
+      .range(calculateColorLegendColors(scale, colorLegendVals));
+      
+    console.log(colorLegendScale.domain(), colorLegendScale.range());
+    colorLegendG.call(colorLegend, {
+      colorLegendScale,
+      circleRadius: 8,
+      spacing: 20,
+      textOffset: 12,
+      backgroundRectWidth: 180
+    });
+
     d3.selectAll('.country')
       .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d))
-      .on("click", handleClick);
+      .on('click', handleClick);
 
     const getYear = document.querySelector('#years');
     getYear.addEventListener('change', (event) => {
       curYear = event.target.value;
+      colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
       svg.selectAll('path')
            .select('title')
              .text(d => tooltipText(objArr, rankings, curYear, d));
@@ -310,6 +349,15 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       scale = d3.scaleLinear()
                 .domain([1, Object.values(objArr[curYear]).length + 1])
                 .range(colorRanges[curMetric]);
+
+      colorLegendScale.range(scale, colorLegendVals);
+      colorLegendG.call(colorLegend, {
+        colorLegendScale,
+        circleRadius: 8,
+        spacing: 20,
+        textOffset: 12,
+        backgroundRectWidth: 180
+      });
 
       d3.selectAll('.country')
         .transition()
