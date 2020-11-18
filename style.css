@@ -144,7 +144,7 @@ h3, p {
 } */
 #svg-content {
   /* display: grid; */
-  border: .1rem solid lightgrey;
+  /* border: .1rem solid lightgrey; */
   /* box-shadow: 10px 5px 5px darkgrey; */
   box-shadow: 0 0 10px 5px darkgrey;
 }  
@@ -159,14 +159,14 @@ h3, p {
   transition: fill 0.25s ease-in;
 }
 
-.country .title {
+/* .country .title {
   position: absolute;
   top: 20px;
   background: silver;
   padding: 4px;
   left: 0;
   white-space: nowrap;
-}
+} */
 
 .country:hover, .country:focus {
   fill: yellow;

@@ -212,15 +212,36 @@ function calculateColorLegendColors(scale, colorLegendValues) {
   return res;
 };
 
+// const colorRanges = {
+//   'hRank': ['#0DFE5A', '#C41010'],
+//   'econ': ['#143601','#f0efad'],
+//   'family': ['#431259', '#ffbe0b'],
+//   'trust': ['#03045E', '#aafcb8'],
+//   'freedom': ['#fa7921', '#0c4767'],
+//   'generosity': ['#f15152', '#1e555c'],
+//   'health': ['#9a031e', '#d7a9ff']
+// };
+
 const colorRanges = {
-  'hRank': ['#0DFE5A', '#C41010'],
-  'econ': ['#143601','white'],
-  'family': ['#431259', 'white'],
-  'trust': ['#03045E', 'white'],
-  'freedom': ['#fa7921', 'white'],
-  'generosity': ['#f15152', 'white'],
-  'health': ['#9a031e', 'white']
+  'hRank': ['#0DFE5A', 'white', '#C41010'],
+  'econ': ['#143601', 'white', '#f0efad'],
+  'family': ['#431259', 'white', '#ffbe0b'],
+  'trust': ['#03045E', 'white', '#aafcb8'],
+  'freedom': ['#fa7921', 'white', '#0c4767'],
+  'generosity': ['#f15152', 'white', '#1e555c'],
+  'health': ['#9a031e', 'white', '#d7a9ff']
 };
+
+
+// const colorRangesScaleChromatic = {
+//   'hRank': ['#0DFE5A', '#C41010'],
+//   'econ': d3.interpolateBrBG[11],
+//   'family': d3.interpolatePRGn[11],
+//   'trust': d3.interpolatePiYG[11],
+//   'freedom': d3.interpolatePuOr[11],
+//   'generosity': d3.interpolateRdBu[11],
+//   'health': d3.interpolateRdYlGn[11]
+// };
 
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
@@ -245,10 +266,10 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
     
     const rankings = calculateRankings(objArr);
-    console.log('geoData', geoData);
-    console.log('objArr', objArr, geoData.map(d => [d.properties.name, d.id]), 'rankings', rankings);
+    // console.log('geoData', geoData);
+    // console.log('objArr', objArr, geoData.map(d => [d.properties.name, d.id]), 'rankings', rankings);
     //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
-    
+    // console.log('scaleChromatic', colorRangesScaleChromatic);
 
     
     const width = 940;
@@ -305,8 +326,13 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .text(d => tooltipText(objArr, rankings, curYear, d));       
 
     let scale = d3.scaleLinear()
-                  .domain([1, Object.values(objArr[curYear]).length + 1])
+                  .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
+
+
+    // let scale = d3.scaleLinear()
+    //               .domain([1, Object.values(objArr[curYear]).length + 1])
+    //               .range(colorRangesScaleChromatic[curMetric]);
 
     let colorLegendScale = d3.scaleOrdinal();
     let colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
@@ -336,8 +362,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     
       d3.selectAll('.country')
         .transition()
-        .duration(700)
-        .ease(d3.easeCubicOut)
+        .duration(850)
+        .ease(d3.easeCircleOut)
         .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
 
@@ -346,7 +372,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       curMetric = event.target.value;
       getText.innerHTML = metricExplanations[curMetric];
       scale = d3.scaleLinear()
-                .domain([1, Object.values(objArr[curYear]).length + 1])
+                .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])
                 .range(colorRanges[curMetric]);
 
       colorLegendScale.range(calculateColorLegendColors(scale, colorLegendVals));
@@ -356,13 +382,13 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         circleRadius: 8,
         spacing: 20,
         textOffset: 12,
-        backgroundRectWidth: 180
+        backgroundRectWidth: 140
       });
 
       d3.selectAll('.country')
         .transition()
-        .duration(700)
-        .ease(d3.easeCubicOut)
+        .duration(850)
+        .ease(d3.easeCircleOut)
         .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
 }).catch((e) => console.log(e));

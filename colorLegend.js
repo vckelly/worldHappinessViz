@@ -36,7 +36,7 @@ export const colorLegend = (selection, props) => {
   groupsEnter.append('circle')
     .merge(groups.select('circle')) 
       .attr('r', circleRadius);
-      // .attr('fill', colorLegendScale); 
+      
   d3.selectAll('circle')     
       .transition()
       .duration(2000)
