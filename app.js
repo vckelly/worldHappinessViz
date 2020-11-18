@@ -311,10 +311,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     let colorLegendScale = d3.scaleOrdinal();
     let colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
     colorLegendScale
-      .domain(['Best', 'Great', 'Better', 'Average', 'Worse than Average', 'Not Good', 'Worst'])
+      .domain(['Best', 'Good', 'Better', 'Average', 'Worse', 'Not Good', 'Worst'])
       .range(calculateColorLegendColors(scale, colorLegendVals));
-      
-    console.log(colorLegendScale.domain(), colorLegendScale.range());
+    //TODO: Add transition to colorLegend that matches the country fill animation
     colorLegendG.call(colorLegend, {
       colorLegendScale,
       circleRadius: 8,
@@ -350,7 +349,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                 .domain([1, Object.values(objArr[curYear]).length + 1])
                 .range(colorRanges[curMetric]);
 
-      colorLegendScale.range(scale, colorLegendVals);
+      colorLegendScale.range(calculateColorLegendColors(scale, colorLegendVals));
+
       colorLegendG.call(colorLegend, {
         colorLegendScale,
         circleRadius: 8,

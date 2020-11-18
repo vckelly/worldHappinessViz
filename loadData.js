@@ -202,7 +202,7 @@ function objWrapper(geoData) {
       }
     };
   });
-  return objArr;
+  return [objArr, geoData];
 }
 
 

@@ -1,5 +1,4 @@
 export const colorLegend = (selection, props) => {
-  console.log(props);
   const {                      
     colorLegendScale,                
     circleRadius,
