@@ -198,7 +198,7 @@ const countryNameVariances = {
 };
 
 function calculateColorLegendValues(lengthOfYear, numDivisions) {
-  let res = [1];
+  let res = [0];
   let interval = lengthOfYear / numDivisions;
   for (let i = 1; i < 8; i++) {
     res.push(Math.floor(i * interval));
@@ -206,9 +206,9 @@ function calculateColorLegendValues(lengthOfYear, numDivisions) {
   return res;
 };
 
-function calculateColorLegendColors(scale, arr) {
+function calculateColorLegendColors(scale, colorLegendValues) {
   let res = [];
-  arr.forEach(val => res.push(scale(val)));
+  colorLegendValues.forEach(val => res.push(scale(val)));
   return res;
 };
 
