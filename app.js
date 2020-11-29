@@ -167,7 +167,7 @@ function handleClick(d, i) {
 
 const metricExplanations = {
   'hRank': 'Happiness Rank', 
-  'econ': 'GDP per Capita', 
+  'econ': 'The Economic metric represents the GDP per Capita of each country.', 
   'family': 'The family metric is the national average of the binary responses (0=no, 1=yes)\n\
             to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
             or friends you can count on to help you whenever you need them, or not?\"', 
@@ -212,16 +212,6 @@ function calculateColorLegendColors(scale, colorLegendValues) {
   return res;
 };
 
-// const colorRanges = {
-//   'hRank': ['#0DFE5A', '#C41010'],
-//   'econ': ['#143601','#f0efad'],
-//   'family': ['#431259', '#ffbe0b'],
-//   'trust': ['#03045E', '#aafcb8'],
-//   'freedom': ['#fa7921', '#0c4767'],
-//   'generosity': ['#f15152', '#1e555c'],
-//   'health': ['#9a031e', '#d7a9ff']
-// };
-
 const colorRanges = {
   'hRank': ['#0DFE5A', 'white', '#C41010'],
   'econ': ['#143601', 'white', '#f0efad'],
@@ -232,16 +222,27 @@ const colorRanges = {
   'health': ['#9a031e', 'white', '#d7a9ff']
 };
 
+function makeResponsive(svg) {
+  const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+ 
+  svg.attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMinYMid')
+      .call(resize);
 
-// const colorRangesScaleChromatic = {
-//   'hRank': ['#0DFE5A', '#C41010'],
-//   'econ': d3.interpolateBrBG[11],
-//   'family': d3.interpolatePRGn[11],
-//   'trust': d3.interpolatePiYG[11],
-//   'freedom': d3.interpolatePuOr[11],
-//   'generosity': d3.interpolateRdBu[11],
-//   'health': d3.interpolateRdYlGn[11]
-// };
+  d3.select(window).on(
+      'resize.' + container.attr('id'), 
+      resize
+  );
+
+  function resize() {
+      const w = parseInt(container.style('width'));
+      svg.attr('width', w);
+      svg.attr('height', Math.round(w / aspect));
+  }
+}
 
 let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
@@ -276,19 +277,15 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     const height = 640;
     const svg = d3.select('svg');
     svg.attr('height', height)
-       .attr('width', width);
+       .attr('width', width)
+       .call(makeResponsive);
+    // svg.attr('viewBox', `0 0 100 300`);
 
     
     let curYear = '2015';
     let curMetric  = 'hRank';
     const getText = document.querySelector('#metricSummary');
     getText.innerHTML = metricExplanations[curMetric];    
-
-    // var svg = d3.select("div#svg-container")
-    //   .append("svg")
-    //   .attr("preserveAspectRatio", "xMinYMin meet")
-    //   .attr("viewBox", "0 0 300 300")
-    //   .classed("svg-content", true);
 
     const projection = d3.geoNaturalEarth1()
                          .scale(170)
@@ -301,7 +298,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     const g = svg.append('g');
 
     const colorLegendG = svg.append('g')
-                            .attr('transform', `translate(40,310)`);
+                            .attr('transform', `translate(40,410)`);
 
     g.append('path')
        .attr('class', 'sphere')
@@ -339,7 +336,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     colorLegendScale
       .domain(['Best', 'Good', 'Better', 'Average', 'Worse', 'Not Good', 'Worst'])
       .range(calculateColorLegendColors(scale, colorLegendVals));
-    //TODO: Add transition to colorLegend that matches the country fill animation
+      
     colorLegendG.call(colorLegend, {
       colorLegendScale,
       circleRadius: 8,
