@@ -160,19 +160,14 @@ function tooltipText(objArr, rankings, year, country) {
   else { return country.properties.name }
 }
 
-function handleClick(d, i) {
-  d.append('title')
-     .text(d => tooltipText(objArr, rankings, curYear, d));     
-}
-
 const metricExplanations = {
   'hRank': 'Happiness Rank', 
-  'econ': 'The Economic metric represents the GDP per Capita of each country.', 
+  'econ': 'The Economic metric represents the GDP per Capita of each country', 
   'family': 'The family metric is the national average of the binary responses (0=no, 1=yes)\n\
             to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
             or friends you can count on to help you whenever you need them, or not?\"', 
   'health': 'The health metric is a time series of healthy life expectancy at birth based on \n\
-            data from the World Health Organization.', 
+            data from the World Health Organization', 
   'trust': 'The trust metric represents perceptions of corruption in government (business corruption\n\
             is also used in lieu of government data) based on the answers to the Gallup World Poll questions\n\
             \"Is corruption widespread throughout the government or not?\" and \"Is corruption widespread throughout\n\
@@ -180,7 +175,7 @@ const metricExplanations = {
   'freedom': 'The freedom metric represents freedom to make life choices based on the national average of binary responses\n\
               to the Gallup World Poll question \"Are you satisfied or dissatisfied with your freedom to choose what you do with your life?\"', 
   'generosity': 'The generosity metric is the residual of regressing the national average of Gallup World Poll responses to the \n\
-                 question \"Have you donated money to a charity in the past month?\" on GDP per capita.' 
+                 question \"Have you donated money to a charity in the past month?\" on GDP per capita' 
 }
 
 const countryNameVariances = {
@@ -326,28 +321,23 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                   .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
 
-
-    // let scale = d3.scaleLinear()
-    //               .domain([1, Object.values(objArr[curYear]).length + 1])
-    //               .range(colorRangesScaleChromatic[curMetric]);
-
     let colorLegendScale = d3.scaleOrdinal();
     let colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
     colorLegendScale
       .domain(['Best', 'Good', 'Better', 'Average', 'Worse', 'Not Good', 'Worst'])
       .range(calculateColorLegendColors(scale, colorLegendVals));
-      
+
     colorLegendG.call(colorLegend, {
       colorLegendScale,
       circleRadius: 8,
       spacing: 20,
       textOffset: 12,
-      backgroundRectWidth: 180
+      backgroundRectWidth: 100
     });
 
     d3.selectAll('.country')
-      .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d))
-      .on('click', handleClick);
+      .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
+    //   .on('click', handleClick);
 
     const getYear = document.querySelector('#years');
     getYear.addEventListener('change', (event) => {
