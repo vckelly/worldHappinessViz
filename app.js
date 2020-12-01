@@ -279,7 +279,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     
     let curYear = '2015';
     let curMetric  = 'hRank';
-    const getText = document.querySelector('#metricSummary');
+    const getText = document.querySelector('#metric-text');
     getText.innerHTML = metricExplanations[curMetric];    
 
     const projection = d3.geoNaturalEarth1()
@@ -300,7 +300,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .attr('d', pathGenerator({type: 'Sphere'}));
 
     svg.call(d3.zoom()
-               .scaleExtent([1, 10])
+               .scaleExtent([1, 7])
                .translateExtent([[width*-.25, height*-.25], [width*1.25, height*1.25]])
                .on('zoom', () => {
                 g.attr('transform', d3.event.transform);}));
