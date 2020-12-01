@@ -202,14 +202,12 @@ function calculateColorLegendValues(lengthOfYear, numDivisions) {
 };
 
 function calculateColorLegendColors(scale, colorLegendValues) {
-  let res = [];
-  colorLegendValues.forEach(val => res.push(scale(val)));
-  return res;
+  return colorLegendValues.map(val => scale(val))
 };
 
 const colorRanges = {
   'hRank': ['#0DFE5A', 'white', '#C41010'],
-  'econ': ['#143601', 'white', '#f0efad'],
+  'econ': ['#143601', 'white', '#eca400'],
   'family': ['#431259', 'white', '#ffbe0b'],
   'trust': ['#03045E', 'white', '#aafcb8'],
   'freedom': ['#fa7921', 'white', '#0c4767'],
