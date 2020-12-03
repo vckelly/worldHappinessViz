@@ -127,19 +127,21 @@ function calculateRankings(obj) {
   let rankedMetrics = ['hRank', 'econ', 'family', 'health', 'trust', 'freedom', 'generosity'];
   [2015, 2016, 2017, 2018, 2019].forEach((year) => {
     rankings[year] = {};
-    let curYear = Object.values(obj[year]);
-    curYear.shift();
-    rankedMetrics.forEach(metric => {
-      let curMetric = [...curYear];
-      if (metric === 'hRank') {
-        curMetric.sort((a, b) => (parseInt(a[metric]) < parseInt(b[metric]) ? -1 : 1));
-      }
-      else{
-        curMetric.sort((a, b) => (parseFloat(a[metric]) > parseFloat(b[metric]) ? -1 : 1));
-      }
-      curMetric = curMetric.map((key) => key['id']);
-      rankings[year][metric] = curMetric;
-    });
+    if (obj[year]) {
+      let curYear = Object.values(obj[year]);
+      curYear.shift();
+      rankedMetrics.forEach(metric => {
+        let curMetric = [...curYear];
+        if (metric === 'hRank') {
+          curMetric.sort((a, b) => (parseInt(a[metric]) < parseInt(b[metric]) ? -1 : 1));
+        }
+        else{
+          curMetric.sort((a, b) => (parseFloat(a[metric]) > parseFloat(b[metric]) ? -1 : 1));
+        }
+          curMetric = curMetric.map((key) => key['id']);
+          rankings[year][metric] = curMetric;
+        });
+    };
   });
   return rankings;
 }
@@ -231,9 +233,10 @@ function makeResponsive(svg) {
   );
 
   function resize() {
-      const w = parseInt(container.style('width'));
-      svg.attr('width', w);
-      svg.attr('height', Math.round(w / aspect));
+    const w = parseInt(container.style('width'));
+    console.log(w, Math.round(w / aspect));
+    svg.attr('width', w);
+    svg.attr('height', Math.round(w / aspect));
   }
 }
 
@@ -272,7 +275,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     svg.attr('height', height)
        .attr('width', width)
        .call(makeResponsive);
-    // svg.attr('viewBox', `0 0 100 300`);
 
     
     let curYear = '2015';
@@ -298,12 +300,19 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .attr('d', pathGenerator({type: 'Sphere'}));
 
     svg.call(d3.zoom()
-               .scaleExtent([1, 7])
+               .scaleExtent([1, 8])
                .translateExtent([[width*-.25, height*-.25], [width*1.25, height*1.25]])
                .on('zoom', () => {
                 g.attr('transform', d3.event.transform);}));
 
+    let tooltip = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
     
+    svg.on('click', function() {
+      d3.selectAll('.tooltip-rect').style('opacity', 0)
+    });
+
     g.selectAll('path')
       .data(geoData.reverse())
       .enter()
@@ -312,9 +321,24 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .attr('d', d => pathGenerator(d))
         .attr('id', d => d.id)
         .attr('name', d => d.properties.name)
-      .append('title')
-        .text(d => tooltipText(objArr, rankings, curYear, d));       
 
+    d3.selectAll('.country')
+      .on('mouseover', function (d, i) {  
+        console.log(d);
+        tooltip.transition().duration(200).style("opacity", .9);      
+        tooltip.html(tooltipText(objArr, rankings, curYear, d))
+                .attr('x', d3.mouse(this)[0])
+                .attr('y', d3.mouse(this)[1]);
+                // .style('left', (d3.event.pageX) + 'px')
+                // .style('top', (d3.event.pageY) + 'px')
+      })
+      .on('mouseout', function(d) {
+        tooltip.transition().duration(500).style("opacity", 0);
+      });
+      
+      // .append('title')
+      //   .text(d => tooltipText(objArr, rankings, curYear, d));
+      
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
@@ -335,8 +359,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     d3.selectAll('.country')
       .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
-    //   .on('click', handleClick);
-
+    
     const getYear = document.querySelector('#years');
     getYear.addEventListener('change', (event) => {
       curYear = event.target.value;
@@ -367,7 +390,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         circleRadius: 8,
         spacing: 20,
         textOffset: 12,
-        backgroundRectWidth: 140
+        backgroundRectWidth: 100
       });
 
       d3.selectAll('.country')

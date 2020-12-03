@@ -36,16 +36,19 @@
   transition: fill 0.25s ease-in;
 }
 
-.country:hover, .country:focus {
+.country:hover {
   fill: yellow;
 }
 
+.country::after {
+  content: attr(tooltip);
+}
 
 select {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
   padding: 1em 4em 1em 1.5em;
   background: #4d5061;
-  color: white;
+  color: whitesmoke;
   border: 0;
 }
 
@@ -154,4 +157,52 @@ select {
   .metric-summary {
     font-size: 1em;
   }
+}
+
+/* @media (pointer: coarse), (hover: none) {
+  [title] {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+  }
+  [title]:focus::after {
+    content: attr(title);
+    position: absolute;
+    top: 90%;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid;
+    width: fit-content;
+    padding: 3px;
+  }
+} */
+
+.tooltip {
+  position: relative;
+}
+.country[tooltip] {
+  position: relative;
+}
+
+.country[tooltip]::after {
+  content: attr(tooltip);
+  display: block;
+  position: absolute;
+  background-color: lightgray;
+  padding: 1em 3em;
+  color: white;
+  border-radius: 5px;
+  font-size: .8em;
+  bottom: 0;
+  left: 0;
+  white-space: nowrap;
+  transform: scale(0);
+  transition:
+    transform ease-out 150ms,
+    bottom ease-out 150ms;
+}
+
+.country[tooltip]:focus::after {
+  transform: scale(1);
+  bottom: 100%;
 }
