@@ -41,7 +41,7 @@
 }
 
 .country::after {
-  content: attr(tooltip);
+  content: attr(tooltip)
 }
 
 select {
@@ -176,9 +176,15 @@ select {
     padding: 3px;
   }
 } */
-
 .tooltip {
   position: relative;
+  text-align: center;           
+  word-wrap: break-word;            
+  padding: 2px;                     
+  background: whitesmoke;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;    
 }
 .country[tooltip] {
   position: relative;

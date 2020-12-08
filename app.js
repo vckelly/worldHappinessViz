@@ -271,7 +271,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     
     const width = 940;
     const height = 640;
-    const svg = d3.select('svg');
+    const svg = d3.select('#svg-content');
     svg.attr('height', height)
        .attr('width', width)
        .call(makeResponsive);
@@ -302,12 +302,11 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     svg.call(d3.zoom()
                .scaleExtent([1, 8])
                .translateExtent([[width*-.25, height*-.25], [width*1.25, height*1.25]])
-               .on('zoom', () => {
-                g.attr('transform', d3.event.transform);}));
+               .on('zoom', () => {g.attr('transform', d3.event.transform);}));
 
-    let tooltip = d3.select("body").append("div")   
-    .attr("class", "tooltip")               
-    .style("opacity", 0);
+    let tooltip = d3.select('body').append('div')   
+                    .attr('class', 'tooltip')               
+                    .style('opacity', 0);
     
     svg.on('click', function() {
       d3.selectAll('.tooltip-rect').style('opacity', 0)
@@ -324,16 +323,22 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     d3.selectAll('.country')
       .on('mouseover', function (d, i) {  
-        console.log(d);
-        tooltip.transition().duration(200).style("opacity", .9);      
+        console.log(d, i, d3.event);
+        tooltip.transition().duration(200).style('opacity', .7);  
         tooltip.html(tooltipText(objArr, rankings, curYear, d))
-                .attr('x', d3.mouse(this)[0])
-                .attr('y', d3.mouse(this)[1]);
-                // .style('left', (d3.event.pageX) + 'px')
-                // .style('top', (d3.event.pageY) + 'px')
+                // .attr('x', d3.event.pageX)
+                // .attr('y', d3.event.pageY);
+                // .style('left', (d3.event.x) + 'px')
+                // .style('top', (d3.event.y) + 'px')
+                .style('left', (d3.event.offsetX)-(svg.attr('width')*.5) + 'px')
+                .style('top', (d3.event.offsetY)-(svg.attr('height')*1.2) + 'px')
+                .style('display', 'inline-block')
+                // .style("left", (parseInt(d3.select(this).attr("cx")) + svg.offsetLeft) + "px")     
+                // .style("top", (parseInt(d3.select(this).attr("cy")) + svg.offsetTop) + "px");    
+
       })
       .on('mouseout', function(d) {
-        tooltip.transition().duration(500).style("opacity", 0);
+        tooltip.transition().duration(500).style('opacity', 0);
       });
       
       // .append('title')
