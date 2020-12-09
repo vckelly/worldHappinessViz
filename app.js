@@ -151,15 +151,32 @@ function tooltipText(objArr, rankings, year, country) {
   if (surveyData[0]){
     let rankedMetrics = ['econ', 'family', 'trust', 'health', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
-    let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n`;
+    let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n\n`;
     rankedMetrics.forEach((metric) => {
       let curRank = rankings[year][metric].indexOf(country.id) + 1;
       let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
-      t += `${upperCaseMetric} Rank: ${curRank} / ${length}\n`;
+      t += `${upperCaseMetric} Rank: ${curRank} / ${length}\n\n`;
     });
     return t.trim();
   }
   else { return country.properties.name }
+}
+
+function toolTipSize(event, tooltip, svgWidth, svgHeight) {
+  if (svgWidth < 300) 
+  {
+    tooltip.style('left', (event.offsetX)-(svgWidth*.1) + 'px')
+           .style('top', (event.offsetY)-(svgHeight*2) + 'px') 
+  }
+  else if (svgWidth < 700)
+  {
+    tooltip.style('left', (event.offsetX)-(svgWidth*.1) + 'px')
+           .style('top', (event.offsetY)-(svgHeight*1.4) + 'px')
+  }
+  else {
+    tooltip.style('left', (event.offsetX)-(svgWidth*.1) + 'px')
+           .style('top', (event.offsetY)-(svgHeight*1.25) + 'px')
+  }
 }
 
 const metricExplanations = {
@@ -323,18 +340,33 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     d3.selectAll('.country')
       .on('mouseover', function (d, i) {  
-        console.log(d, i, d3.event);
-        tooltip.transition().duration(200).style('opacity', .7);  
-        tooltip.html(tooltipText(objArr, rankings, curYear, d))
-                // .attr('x', d3.event.pageX)
-                // .attr('y', d3.event.pageY);
-                // .style('left', (d3.event.x) + 'px')
-                // .style('top', (d3.event.y) + 'px')
-                .style('left', (d3.event.offsetX)-(svg.attr('width')*.5) + 'px')
-                .style('top', (d3.event.offsetY)-(svg.attr('height')*1.2) + 'px')
-                .style('display', 'inline-block')
-                // .style("left", (parseInt(d3.select(this).attr("cx")) + svg.offsetLeft) + "px")     
-                // .style("top", (parseInt(d3.select(this).attr("cy")) + svg.offsetTop) + "px");    
+        // console.log(d, i, d3.event);
+        let svgHeight = svg.attr('height');
+        let svgWidth = svg.attr('width');
+        console.log(svgHeight, svgWidth);
+        tooltip.transition().duration(200).style('opacity', .8)  
+               .text(tooltipText(objArr, rankings, curYear, d));
+        toolTipSize(d3.event, tooltip, svgWidth, svgHeight);
+        // if (svgWidth < 300) 
+        // {
+        //   tooltip.text(tooltipText(objArr, rankings, curYear, d))
+        //           .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
+        //           .style('top', (d3.event.offsetY)-(svgHeight*2) + 'px')
+        //           .style('display', 'inline-block')
+        // }
+        // else if (svgWidth < 700)
+        // {
+        //   tooltip.text(tooltipText(objArr, rankings, curYear, d))
+        //           .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
+        //           .style('top', (d3.event.offsetY)-(svgHeight*1.4) + 'px')
+        //           .style('display', 'inline-block')
+        // }
+        // else {
+        //   tooltip.text(tooltipText(objArr, rankings, curYear, d))
+        //           .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
+        //           .style('top', (d3.event.offsetY)-(svgHeight*1.25) + 'px')
+        //           .style('display', 'inline-block')
+        // }
 
       })
       .on('mouseout', function(d) {
