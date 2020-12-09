@@ -162,23 +162,6 @@ function tooltipText(objArr, rankings, year, country) {
   else { return country.properties.name }
 }
 
-function toolTipSize(event, tooltip, svgWidth, svgHeight) {
-  if (svgWidth < 300) 
-  {
-    tooltip.style('left', (event.offsetX)-(svgWidth*.1) + 'px')
-           .style('top', (event.offsetY)-(svgHeight*2) + 'px') 
-  }
-  else if (svgWidth < 700)
-  {
-    tooltip.style('left', (event.offsetX)-(svgWidth*.1) + 'px')
-           .style('top', (event.offsetY)-(svgHeight*1.4) + 'px')
-  }
-  else {
-    tooltip.style('left', (event.offsetX)-(svgWidth*.1) + 'px')
-           .style('top', (event.offsetY)-(svgHeight*1.25) + 'px')
-  }
-}
-
 const metricExplanations = {
   'hRank': 'Happiness Rank', 
   'econ': 'The Economic metric represents the GDP per Capita of each country', 
@@ -338,44 +321,33 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .attr('id', d => d.id)
         .attr('name', d => d.properties.name)
 
+    //TODO: Trim size of tooltip for countries without data
     d3.selectAll('.country')
       .on('mouseover', function (d, i) {  
-        // console.log(d, i, d3.event);
         let svgHeight = svg.attr('height');
         let svgWidth = svg.attr('width');
-        console.log(svgHeight, svgWidth);
         tooltip.transition().duration(200).style('opacity', .8)  
-               .text(tooltipText(objArr, rankings, curYear, d));
-        toolTipSize(d3.event, tooltip, svgWidth, svgHeight);
-        // if (svgWidth < 300) 
-        // {
-        //   tooltip.text(tooltipText(objArr, rankings, curYear, d))
-        //           .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
-        //           .style('top', (d3.event.offsetY)-(svgHeight*2) + 'px')
-        //           .style('display', 'inline-block')
-        // }
-        // else if (svgWidth < 700)
-        // {
-        //   tooltip.text(tooltipText(objArr, rankings, curYear, d))
-        //           .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
-        //           .style('top', (d3.event.offsetY)-(svgHeight*1.4) + 'px')
-        //           .style('display', 'inline-block')
-        // }
-        // else {
-        //   tooltip.text(tooltipText(objArr, rankings, curYear, d))
-        //           .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
-        //           .style('top', (d3.event.offsetY)-(svgHeight*1.25) + 'px')
-        //           .style('display', 'inline-block')
-        // }
-
+               .text(tooltipText(objArr, rankings, curYear, d))
+               .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
+               .style('transform', 'scale(1)');
+        if (svgWidth < 350) 
+        {
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.8) + 'px')
+        }
+        else if (svgWidth < 700)
+        {
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.4) + 'px')
+        }
+        else {
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.5) + 'px')
+                 .style('left', (d3.event.offsetX)+(svgWidth*.1) + 'px');
+        }
       })
       .on('mouseout', function(d) {
-        tooltip.transition().duration(500).style('opacity', 0);
+        tooltip.transition().duration(300).style('opacity', 0)
+                                          .style('transform', 'scale(0)');
       });
-      
-      // .append('title')
-      //   .text(d => tooltipText(objArr, rankings, curYear, d));
-      
+
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);

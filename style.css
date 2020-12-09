@@ -123,14 +123,15 @@ select {
   word-wrap: break-word;           
   font-size: 4px; 
   white-space: pre-line;
-  padding: 2px;                     
-  background: whitesmoke;   
+  padding: 5px;                     
+  background: lightgray;   
   width: 50px;
   height: 80px;
   border: 0px;      
   border-radius: 8px;           
   pointer-events: none;    
 }
+
 
 @media only screen and (min-width: 768px) {
   .header-img {
@@ -153,8 +154,9 @@ select {
   }
 
   .tooltip {       
-    font-size: .5em; 
-    transform: scale(1.5, 1.5);
+    font-size: .4em; 
+    width: 50px;
+    height: 270px;
   }
 }
 
@@ -175,8 +177,9 @@ select {
   }
 
   .tooltip {       
-    font-size: .8em; 
-    transform: scale(2, 2);
+    font-size: .7em; 
+    width: 175px;
+    height: 200px;
   }
 }
 
