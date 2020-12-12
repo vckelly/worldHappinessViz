@@ -283,8 +283,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getText.innerHTML = metricExplanations[curMetric];    
 
     const projection = d3.geoNaturalEarth1()
-                         .scale(170)
+                         .scale(130)
                          .translate([width / 2, height / 2]);
+                        //  .translate([parseInt(svg.attr('width'))/2, parseInt(svg.attr('height'))/2]);
                         // .translate([150, 150]);
 
 
@@ -326,6 +327,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       .on('mouseover', function (d, i) {  
         let svgHeight = svg.attr('height');
         let svgWidth = svg.attr('width');
+        console.log(d3.event.target);
+        console.log(d3.event.offsetX, d3.event.offsetY)
         tooltip.transition().duration(200).style('opacity', .8)  
                .text(tooltipText(objArr, rankings, curYear, d))
                .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
@@ -336,11 +339,11 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         }
         else if (svgWidth < 700)
         {
-          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.4) + 'px')
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.65) + 'px')
         }
         else {
-          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.5) + 'px')
-                 .style('left', (d3.event.offsetX)+(svgWidth*.1) + 'px');
+          tooltip.style('left', (d3.event.offsetX)-(svgWidth*.3) + 'px')
+                 .style('top', (d3.event.offsetY)-(svgHeight*1.45) + 'px');
         }
       })
       .on('mouseout', function(d) {
