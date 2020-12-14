@@ -122,6 +122,7 @@ select {
   text-align: center;           
   word-wrap: break-word;           
   font-size: 4px; 
+  font-weight: bold;
   white-space: pre-line;
   padding: 5px;                     
   background: lightgray;   
@@ -147,7 +148,7 @@ select {
 
   .header-container {
     width: 768px;
-    height: 500px;
+    height: 400px;
     margin: 0 auto;
   }
 
@@ -179,7 +180,8 @@ select {
   }
 
   .tooltip {       
-    font-size: .8em; 
+    font-size: .8em;
+    font-weight: normal; 
     width: 175px;
     height: 240px;
   }

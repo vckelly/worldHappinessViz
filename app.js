@@ -210,7 +210,7 @@ function calculateColorLegendColors(scale, colorLegendValues) {
 const colorRanges = {
   'hRank': ['#0DFE5A', 'white', '#C41010'],
   'econ': ['#143601', 'white', '#eca400'],
-  'family': ['#431259', 'white', '#ffbe0b'],
+  'family': ['#431259', 'white', '#dc2f02'],
   'trust': ['#03045E', 'white', '#aafcb8'],
   'freedom': ['#fa7921', 'white', '#0c4767'],
   'generosity': ['#f15152', 'white', '#1e555c'],
