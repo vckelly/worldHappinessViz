@@ -235,7 +235,6 @@ function makeResponsive(svg) {
 
   function resize() {
     const w = parseInt(container.style('width'));
-    console.log(w, Math.round(w / aspect));
     svg.attr('width', w);
     svg.attr('height', Math.round(w / aspect));
   }
@@ -326,32 +325,43 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .attr('id', d => d.id)
         .attr('name', d => d.properties.name)
 
-    //TODO: Trim size of tooltip for countries without data
     d3.selectAll('.country')
       .on('mouseover', function (d, i) {  
         let svgHeight = svg.attr('height');
         let svgWidth = svg.attr('width');
+        let curText = tooltipText(objArr, rankings, curYear, d);
         tooltip.transition().duration(200).style('opacity', .8)  
-               .text(tooltipText(objArr, rankings, curYear, d))
-               .style('transform', 'scale(1)');
-        if (svgWidth < 350) 
+               .text(curText);
+
+        if (curText.length < 8){
+          tooltip.style('height', '20px');
+        }
+
+        if (window.screen.width < 450) 
         {
-          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.8) + 'px')
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.7) + 'px')
+                 .style('left', (d3.event.offsetX)-(svgWidth*.13) + 'px')
+        }
+        else if (window.screen.width < 768) 
+        {
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.45) + 'px')
                  .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
         }
-        else if (svgWidth < 700)
+        else if (window.screen.width < 1024)
         {
-          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.65) + 'px')
-                 .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.4) + 'px')
+                 .style('left', (d3.event.offsetX)-(svgWidth*.2) + 'px')
         }
         else {
-          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.45) + 'px')
-                 .style('left', (d3.event.offsetX)-(svgWidth*.2) + 'px');
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.3) + 'px')
+                 .style('left', (d3.event.offsetX)-(svgWidth*.19) + 'px');
         }
       })
       .on('mouseout', function(d) {
-        tooltip.transition().duration(300).style('opacity', 0)
-                                          .style('transform', 'scale(0)');
+        tooltip.transition()
+               .duration(300)
+               .style('height', 'auto')
+               .style('opacity', 0)                           
       });
 
     let scale = d3.scaleLinear()

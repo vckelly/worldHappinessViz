@@ -121,7 +121,6 @@ select {
 .tooltip {
   position: relative;
   text-align: center;           
-  word-wrap: break-word;           
   font-size: 4px; 
   font-weight: bold;
   white-space: pre-line;
@@ -132,8 +131,8 @@ select {
   border: 0px;      
   border-radius: 8px;           
   pointer-events: none;    
-  transform: scale(0);
-  transition: transform ease-out 50ms;
+  /* transform: scale(0);
+  transition: transform ease-out 50ms; */
 }
 
 
