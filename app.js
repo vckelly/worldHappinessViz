@@ -1,4 +1,5 @@
 import { colorLegend } from '/colorLegend.js';
+import { metricSummary } from '/metricSummary.js';
 
 function parse2015(filename) {
   return d3.dsv(",", filename, function(d) {
@@ -295,6 +296,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
     const colorLegendG = svg.append('g')
                             .attr('transform', `translate(40,410)`);
+    
+    const metricSummaryG = svg.append('g')
+                              .attr('transform', `translate(0, 0)`);
 
     g.append('path')
        .attr('class', 'sphere')
@@ -327,23 +331,22 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       .on('mouseover', function (d, i) {  
         let svgHeight = svg.attr('height');
         let svgWidth = svg.attr('width');
-        console.log(d3.event.target);
-        console.log(d3.event.offsetX, d3.event.offsetY)
         tooltip.transition().duration(200).style('opacity', .8)  
                .text(tooltipText(objArr, rankings, curYear, d))
-               .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
                .style('transform', 'scale(1)');
         if (svgWidth < 350) 
         {
           tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.8) + 'px')
+                 .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
         }
         else if (svgWidth < 700)
         {
           tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.65) + 'px')
+                 .style('left', (d3.event.offsetX)-(svgWidth*.1) + 'px')
         }
         else {
-          tooltip.style('left', (d3.event.offsetX)-(svgWidth*.3) + 'px')
-                 .style('top', (d3.event.offsetY)-(svgHeight*1.45) + 'px');
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.45) + 'px')
+                 .style('left', (d3.event.offsetX)-(svgWidth*.2) + 'px');
         }
       })
       .on('mouseout', function(d) {
@@ -367,6 +370,14 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       spacing: 20,
       textOffset: 12,
       backgroundRectWidth: 100
+    });
+
+    metricSummaryG.call(metricSummary, {
+      // d3.select(svg).attr('width'),
+      // d3.select(svg).attr('height'), 
+      width: 100,
+      height: 100,
+      text: metricExplanations[curMetric]
     });
 
     d3.selectAll('.country')

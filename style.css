@@ -112,6 +112,7 @@ select {
   padding: 5px 5px;
   font-size: .5em;
   max-width: 80%;
+  line-height: 1.6;
   /* border: solid grey; */
   border-radius: 10px;
   box-shadow: 0 0 3px 2px darkgrey;
