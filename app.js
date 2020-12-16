@@ -152,7 +152,8 @@ function tooltipText(objArr, rankings, year, country) {
   if (surveyData[0]){
     let rankedMetrics = ['econ', 'family', 'trust', 'health', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
-    let t = `${surveyData[0].country}\n\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n\n`;
+    let country = '<h3>' + surveyData[0].country + '</h3>';
+    let t = country + `\n\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n\n`;
     rankedMetrics.forEach((metric) => {
       let curRank = rankings[year][metric].indexOf(country.id) + 1;
       let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
@@ -160,24 +161,24 @@ function tooltipText(objArr, rankings, year, country) {
     });
     return t.trim();
   }
-  else { return country.properties.name }
+  else { return '<h3>' + country.properties.name + '</h3>'}
 }
 
 const metricExplanations = {
-  'hRank': 'Happiness Rank', 
-  'econ': 'The Economic metric represents the GDP per Capita of each country', 
-  'family': 'The family metric is the national average of the binary responses (0=no, 1=yes)\n\
+  'hRank': '<b>Happiness Rank</b>', 
+  'econ': 'The <b>Economic metric</b> represents the GDP per Capita of each country', 
+  'family': 'The <b>Family metric</b> is the national average of the binary responses (0=no, 1=yes)\n\
             to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
             or friends you can count on to help you whenever you need them, or not?\"', 
-  'health': 'The health metric is a time series of healthy life expectancy at birth based on \n\
+  'health': 'The <b>Health metric</b> is a time series of healthy life expectancy at birth based on \n\
             data from the World Health Organization', 
-  'trust': 'The trust metric represents perceptions of corruption in government (business corruption\n\
+  'trust': 'The <b>Trust metric</b> represents perceptions of corruption in government (business corruption\n\
             is also used in lieu of government data) based on the answers to the Gallup World Poll questions\n\
             \"Is corruption widespread throughout the government or not?\" and \"Is corruption widespread throughout\n\
             business or not?\"', 
-  'freedom': 'The freedom metric represents freedom to make life choices based on the national average of binary responses\n\
+  'freedom': 'The <b>Freedom metric</b> represents freedom to make life choices based on the national average of binary responses\n\
               to the Gallup World Poll question \"Are you satisfied or dissatisfied with your freedom to choose what you do with your life?\"', 
-  'generosity': 'The generosity metric is the residual of regressing the national average of Gallup World Poll responses to the \n\
+  'generosity': 'The <b>Generosity metric</b> is the residual of regressing the national average of Gallup World Poll responses to the \n\
                  question \"Have you donated money to a charity in the past month?\" on GDP per capita' 
 }
 
@@ -330,8 +331,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         let svgHeight = svg.attr('height');
         let svgWidth = svg.attr('width');
         let curText = tooltipText(objArr, rankings, curYear, d);
-        tooltip.transition().duration(200).style('opacity', .8)  
-               .text(curText);
+        tooltip.transition().duration(200).style('opacity', .8);  
+        tooltip.html(curText);
 
         if (curText.length < 8){
           tooltip.style('height', '20px');
@@ -339,7 +340,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
         if (window.screen.width < 450) 
         {
-          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.7) + 'px')
+          tooltip.style('top', (d3.event.offsetY)-(svgHeight*1.9) + 'px')
                  .style('left', (d3.event.offsetX)-(svgWidth*.13) + 'px')
         }
         else if (window.screen.width < 768) 
@@ -397,9 +398,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getYear.addEventListener('change', (event) => {
       curYear = event.target.value;
       colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
-      svg.selectAll('path')
-           .select('title')
-             .text(d => tooltipText(objArr, rankings, curYear, d));
+      // svg.selectAll('path')
+      //      .select('title')
+      //        .text(d => tooltipText(objArr, rankings, curYear, d));
     
       d3.selectAll('.country')
         .transition()
