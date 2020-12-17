@@ -4,7 +4,7 @@
 }
 
 body {
-  
+  overflow-x: scroll;
 }
 
 .header-container {
@@ -23,6 +23,7 @@ body {
 }
 
 .svg-wrapper {
+  position: relative;
   padding: 50px 50px 20px;
 }
 
@@ -126,7 +127,6 @@ select {
   position: relative;
   text-align: center;           
   font-size: 4px; 
-  font-weight: bold;
   white-space: pre-line;
   padding: 5px;                     
   background: lightgray;   
