@@ -92,7 +92,13 @@ async function convertToObject(func, filename, year) {
   const nameVariances = {
     'Congo (Kinshasa)': 'Democratic Republic of the Congo',
     'Congo (Brazzaville)': 'Congo',
-    'Somaliland region': 'Somaliland'
+    'Northern Cyprus': 'North Cyprus',
+    'North Macedonia': 'Macedonia',
+    'Hong Kong S.A.R., China': 'Hong Kong',
+    'Somaliland region': 'Somaliland',
+    'Somaliland Region': 'Somaliland',
+    'Taiwan Province of China': 'Taiwan',
+    'Trinidad & Tobago': 'Trinidad and Tobago'
   }
   let myObj = new Object();
   let y = await func(filename);
@@ -165,6 +171,23 @@ function tooltipText(objArr, rankings, year, country) {
   else { return '<h3>' + country.properties.name + '</h3>'}
 }
 
+const countryNameVariances = {
+  'Central African Rep.': 'Central African Republic',
+  'Dem. Rep. Congo': 'Democratic Republic of the Congo',
+  'Bosnia and Herz.': 'Bosnia and Herzegovina',
+  'Czechia': 'Czech Republic',
+  'Dominican Rep.': 'Dominican Republic',
+  'Côte d\'Ivoire': 'Ivory Coast',
+  'United States of America': 'United States',
+  'S. Sudan': 'South Sudan',
+  'Palestine': 'Palestinian Territories',
+  'Trinidad & Tobago': 'Trinidad and Tobago',
+  'Taiwan Province of China': 'Taiwan',
+  'eSwatini': 'Swaziland',
+  'Somaliland Region': 'Somaliland',
+  'N. Cyprus': 'North Cyprus'
+};
+
 const metricExplanations = {
   'hRank': '<b>Happiness Rank</b>', 
   'econ': 'The <b>Economic metric</b> represents the GDP (per capita)  of each country', 
@@ -183,20 +206,7 @@ const metricExplanations = {
                  question \"Have you donated money to a charity in the past month?\" on GDP per capita' 
 }
 
-const countryNameVariances = {
-  'Central African Rep.': 'Central African Republic',
-  'Dem. Rep. Congo': 'Democratic Republic of the Congo',
-  'Bosnia and Herz.': 'Bosnia and Herzegovina',
-  'Czechia': 'Czech Republic',
-  'Dominican Rep.': 'Dominican Republic',
-  'Côte d\'Ivoire': 'Ivory Coast',
-  'United States of America': 'United States',
-  'S. Sudan': 'South Sudan',
-  'Palestine': 'Palestinian Territories',
-  'Trinidad and Tobago': 'Trinidad & Tobago',
-  'Somaliland Region': 'Somaliland',
-  'N. Cyprus': 'North Cyprus'
-};
+
 
 function calculateColorLegendValues(lengthOfYear, numDivisions) {
   let res = [0];
@@ -266,9 +276,10 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
     
     const rankings = calculateRankings(objArr);
-    console.log('geoData', geoData);
-    geoData.forEach((country) => console.log(country['properties']['name']));
-    console.log('objArr', objArr, geoData.map(d => [d.properties.name, d.id]), 'rankings', rankings);
+    //console.log('geoData', geoData);
+    //geoData.forEach((country) => console.log(country['properties']['name']));
+    console.log('objArr', objArr, 'rankings', rankings);
+    //geoData.forEach(d => console.log([d.properties.name, d.id]));
     //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
     // console.log('scaleChromatic', colorRangesScaleChromatic);
 
