@@ -1,5 +1,6 @@
 import { colorLegend } from '/colorLegend.js';
 import { metricSummary } from '/metricSummary.js';
+// const Bowser = require("bowser");
 
 function parse2015(filename) {
   return d3.dsv(",", filename, function(d) {
@@ -131,17 +132,17 @@ function calculateRankings(obj) {
     if (obj[year]) {
       let curYear = Object.values(obj[year]);
       curYear.shift();
+      //console.log("PRE", curYear);
       rankedMetrics.forEach(metric => {
         let curMetric = [...curYear];
-        if (metric === 'hRank') {
-          curMetric.sort((a, b) => (parseInt(a[metric]) < parseInt(b[metric]) ? -1 : 1));
-        }
-        else{
+        if (metric !== 'hRank') {
           curMetric.sort((a, b) => (parseFloat(a[metric]) > parseFloat(b[metric]) ? -1 : 1));
         }
+          curMetric.forEach((country) => {if (!country['id']) {console.log("COUNTRY", country)}});
           curMetric = curMetric.map((key) => key['id']);
+          //console.log("POST", curMetric);
           rankings[year][metric] = curMetric;
-        });
+      });
     };
   });
   return rankings;
@@ -152,8 +153,8 @@ function tooltipText(objArr, rankings, year, country) {
   if (surveyData[0]){
     let rankedMetrics = ['econ', 'family', 'trust', 'health', 'freedom', 'generosity'];
     let length = rankings[year]['econ'].length;
-    let country = '<h3>' + surveyData[0].country + '</h3>';
-    let t = country + `\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n\n`;
+    let countryHTML = '<h3>' + surveyData[0].country + '</h3>';
+    let t = countryHTML + `\nHappiness Rank: ${surveyData[0].hRank} / ${length}\n\n`;
     rankedMetrics.forEach((metric) => {
       let curRank = rankings[year][metric].indexOf(country.id) + 1;
       let upperCaseMetric = metric.charAt(0).toUpperCase() + metric.slice(1);
@@ -166,7 +167,7 @@ function tooltipText(objArr, rankings, year, country) {
 
 const metricExplanations = {
   'hRank': '<b>Happiness Rank</b>', 
-  'econ': 'The <b>Economic metric</b> represents the GDP per Capita of each country', 
+  'econ': 'The <b>Economic metric</b> represents the GDP (per capita)  of each country', 
   'family': 'The <b>Family metric</b> is the national average of the binary responses (0=no, 1=yes)\n\
             to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
             or friends you can count on to help you whenever you need them, or not?\"', 
@@ -191,7 +192,8 @@ const countryNameVariances = {
   'Côte d\'Ivoire': 'Ivory Coast',
   'United States of America': 'United States',
   'S. Sudan': 'South Sudan',
-  'Somaliland region': 'Somaliland',
+  'Palestine': 'Palestinian Territories',
+  'Trinidad and Tobago': 'Trinidad & Tobago',
   'Somaliland Region': 'Somaliland',
   'N. Cyprus': 'North Cyprus'
 };
@@ -264,8 +266,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
     
     const rankings = calculateRankings(objArr);
-    // console.log('geoData', geoData);
-    // console.log('objArr', objArr, geoData.map(d => [d.properties.name, d.id]), 'rankings', rankings);
+    console.log('geoData', geoData);
+    geoData.forEach((country) => console.log(country['properties']['name']));
+    console.log('objArr', objArr, geoData.map(d => [d.properties.name, d.id]), 'rankings', rankings);
     //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
     // console.log('scaleChromatic', colorRangesScaleChromatic);
 
@@ -313,8 +316,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
                     .attr('class', 'tooltip')               
                     .style('opacity', 0);
     
-    svg.on('click', function(e) {
-      e.preventDefault();
+    svg.on('click', function() {
       d3.selectAll('.tooltip-rect').style('opacity', 0)
     });
 
@@ -334,6 +336,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         let curText = tooltipText(objArr, rankings, curYear, d);
         tooltip.transition().duration(200).style('opacity', .8);  
         tooltip.html(curText);
+
+        // let browser = Bowser.getParser(window.navigator.userAgent);
+        // console.log(browser);
 
         if (curText.length < 8){
           tooltip.style('height', '20px')
@@ -401,6 +406,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     getYear.addEventListener('change', (event) => {
       curYear = event.target.value;
       colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
+
+      d3.selectAll('.country')
     
       d3.selectAll('.country')
         .transition()

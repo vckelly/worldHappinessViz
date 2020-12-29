@@ -5,6 +5,7 @@
 
 body {
   overflow-x: scroll;
+  min-height: 1000px;
 }
 
 .header-container {
@@ -116,7 +117,7 @@ select {
   border: 2%;
   padding: 10px;
   font-size: .5em;
-  max-width: 80%;
+  max-width: 75%;
   line-height: 1.6;
   /* border: solid grey; */
   border-radius: 10px;
@@ -135,6 +136,8 @@ select {
   border: 0px;      
   border-radius: 8px;           
   pointer-events: none;    
+  overflow: hidden;
+  transition: height 500 ease-out;
   /* transform: scale(0);
   transition: transform ease-out 50ms; */
 }
@@ -168,6 +171,7 @@ select {
 }
 
 @media only screen and (min-width: 1024px) {
+
   .header-img {
     display: block;
     width: 100%;
