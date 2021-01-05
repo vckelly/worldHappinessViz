@@ -1,5 +1,4 @@
 import { colorLegend } from '/colorLegend.js';
-import { metricSummary } from '/metricSummary.js';
 // const Bowser = require("bowser");
 
 function parse2015(filename) {
@@ -276,7 +275,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
     
     const rankings = calculateRankings(objArr);
-    //console.log('geoData', geoData);
+    console.log('geoData', geoData);
     //geoData.forEach((country) => console.log(country['properties']['name']));
     console.log('objArr', objArr, 'rankings', rankings);
     //geoData.forEach(d => console.log([d.properties.name, d.id]));
@@ -292,7 +291,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
        .call(makeResponsive);
 
     
-    let curYear = '2015';
+    let curYear = 2015;
     let curMetric  = 'hRank';
     const getText = document.querySelector('#metric-text');
     getText.innerHTML = metricExplanations[curMetric];    
@@ -311,9 +310,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     const colorLegendG = svg.append('g')
                             .attr('transform', `translate(40,410)`);
     
-    const metricSummaryG = svg.append('g')
-                              .attr('transform', `translate(0, 0)`);
-
     let pathSphere = g.append('path')
        .attr('class', 'sphere')
        .attr('d', pathGenerator({type: 'Sphere'}));
@@ -350,36 +346,68 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         // let browser = Bowser.getParser(window.navigator.userAgent);
         // console.log(browser);
 
-        if (curText.length < 8){
+        // let mouse = d3.mouse(this);
+        // console.log(mouse);
+        // let event = d3.event;
+        // console.log(event);
+
+        
+
+        if (curText.length < 40){
+          console.log(curText.length);
           tooltip.style('height', '20px')
-        }
-        if (window.screen.width < 450) 
-        {
-          tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.9)) + 'px')
-                 .style('left', parseInt((d3.event.offsetX)-(svgWidth*.13)) + 'px')
-        }
-        else if (window.screen.width < 768) 
-        {
-          tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.45)) + 'px')
-                 .style('left', parseInt((d3.event.offsetX)-(svgWidth*.1)) + 'px')
-        }
-        else if (window.screen.width < 1024)
-        {
-          tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.4)) + 'px')
-                 .style('left', parseInt((d3.event.offsetX)-(svgWidth*.2)) + 'px')
+
+          if (window.screen.width < 450) 
+          {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.6)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.13)) + 'px')
+          }
+          else if (window.screen.width < 768) 
+          {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.3)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.1)) + 'px')
+          }
+          else if (window.screen.width < 1024)
+          {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.4)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.2)) + 'px')
+          }
+          else {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.2)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.19)) + 'px');
+
+          }
         }
         else {
-          tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.3)) + 'px')
-                 .style('left', parseInt((d3.event.offsetX)-(svgWidth*.19)) + 'px');
+          if (window.screen.width < 450) 
+          {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.9)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.13)) + 'px')
+          }
+          else if (window.screen.width < 768) 
+          {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.45)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.1)) + 'px')
+          }
+          else if (window.screen.width < 1024)
+          {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.4)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.2)) + 'px')
+          }
+          else {
+            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.3)) + 'px')
+                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.19)) + 'px');
+
+          }
         }
-  
       })
       .on('mouseout', function(d) {
         tooltip.transition()
                .duration(500)
                .style('opacity', 0)    
+               .style('height', 'auto')
 
-        tooltip.style('height', 'auto')                
+        // tooltip.style('height', 'auto')                
       });
 
     let scale = d3.scaleLinear()
@@ -398,14 +426,6 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
       spacing: 20,
       textOffset: 12,
       backgroundRectWidth: 100
-    });
-
-    metricSummaryG.call(metricSummary, {
-      // d3.select(svg).attr('width'),
-      // d3.select(svg).attr('height'), 
-      width: 100,
-      height: 100,
-      text: metricExplanations[curMetric]
     });
 
     d3.selectAll('.country')
