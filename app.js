@@ -206,6 +206,102 @@ const metricExplanations = {
 }
 
 
+function tooltipSizing(tooltip, event, curTextLen, height, width, browser) {
+  if (browser === 'Chrome') {
+    if (curTextLen < 40){
+      tooltip.style('height', '20px')
+
+      if (window.screen.width < 450) 
+      {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.6)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.13)) + 'px')
+      }
+      else if (window.screen.width < 768) 
+      {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.4)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.15)) + 'px')
+      }
+      else if (window.screen.width < 1024)
+      {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.4)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.2)) + 'px')
+      }
+      else {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.45)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.19)) + 'px');
+      }
+    }
+    else {
+      if (window.screen.width < 450) 
+      {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.6)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.13)) + 'px')
+      }
+      else if (window.screen.width < 768) 
+      {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.4)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.15)) + 'px')
+      }
+      else if (window.screen.width < 1024)
+      {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.45)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.2)) + 'px')
+      }
+      else {
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.45)) + 'px')
+              .style('left', parseInt((event.offsetX)-(width*.19)) + 'px');
+
+      }
+    }
+  }
+  else {
+    if (curTextLen < 40){
+      tooltip.style('height', '20px')
+
+      if (window.screen.width < 450) 
+      {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.3)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.13)) + 'px')
+      }
+      else if (window.screen.width < 768) 
+      {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.3)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.1)) + 'px')
+      }
+      else if (window.screen.width < 1024)
+      {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.4)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.2)) + 'px')
+      }
+      else {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.2)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.19)) + 'px');
+      }
+    }
+    else {
+      if (window.screen.width < 450) 
+      {
+        tooltip.style('top', parseInt((event.clientY)-(height*3)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.25)) + 'px')
+      }
+      else if (window.screen.width < 768) 
+      {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.4)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.2)) + 'px');
+      }
+      else if (window.screen.width < 1024)
+      {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.7)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.25)) + 'px');
+      }
+      else {
+        tooltip.style('top', parseInt((event.clientY)-(height*1.3)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.25)) + 'px');
+
+      }
+    }
+  }
+}
 
 function calculateColorLegendValues(lengthOfYear, numDivisions) {
   let res = [0];
@@ -275,9 +371,9 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     });
     
     const rankings = calculateRankings(objArr);
-    console.log('geoData', geoData);
+    //console.log('geoData', geoData);
     //geoData.forEach((country) => console.log(country['properties']['name']));
-    console.log('objArr', objArr, 'rankings', rankings);
+    //console.log('objArr', objArr, 'rankings', rankings);
     //geoData.forEach(d => console.log([d.properties.name, d.id]));
     //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
     // console.log('scaleChromatic', colorRangesScaleChromatic);
@@ -348,58 +444,16 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
 
         // let mouse = d3.mouse(this);
         // console.log(mouse);
-        // let event = d3.event;
-        // console.log(event);
-
+        let event = d3.event;
+        //console.log(event);
         
-
-        if (curText.length < 40){
-          console.log(curText.length);
-          tooltip.style('height', '20px')
-
-          if (window.screen.width < 450) 
-          {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.6)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.13)) + 'px')
-          }
-          else if (window.screen.width < 768) 
-          {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.3)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.1)) + 'px')
-          }
-          else if (window.screen.width < 1024)
-          {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.4)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.2)) + 'px')
-          }
-          else {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.2)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.19)) + 'px');
-
-          }
+        if (!event.offsetX || !event.offestY) {
+          tooltipSizing(tooltip, event, curText.length, svgHeight, svgWidth, 'Firefox')
         }
         else {
-          if (window.screen.width < 450) 
-          {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.9)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.13)) + 'px')
-          }
-          else if (window.screen.width < 768) 
-          {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.45)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.1)) + 'px')
-          }
-          else if (window.screen.width < 1024)
-          {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.4)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.2)) + 'px')
-          }
-          else {
-            tooltip.style('top', parseInt((d3.event.offsetY)-(svgHeight*1.3)) + 'px')
-                  .style('left', parseInt((d3.event.offsetX)-(svgWidth*.19)) + 'px');
-
-          }
+          tooltipSizing(tooltip, event, curText.length, svgHeight, svgWidth, 'Chrome')
         }
+        
       })
       .on('mouseout', function(d) {
         tooltip.transition()
