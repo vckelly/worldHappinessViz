@@ -341,10 +341,7 @@ let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
 let objArr = {}
 
 Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
-  values.forEach((v) => {
-    console.log("In Promise", v.year);
-    objArr[v.year] = v;
-  })
+  values.forEach((v) => objArr[v.year] = v );
 
   let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
