@@ -111,23 +111,19 @@ async function convertToObject(func, filename, year) {
   return myObj;
 };
 
-function calculateColorScale(objArr, rankings, scale, curYear, curMetric, country) {
-  let surveyData = Object.values(objArr[curYear]).filter(x => x.id === country.id);
-  return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(country.id) + 1) : 'grey';
-};
+// let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015)
+// let y2016 = convertToObject(parse2016, "/data/2016.csv", 2016)
+// let y2017 = convertToObject(parse2017, "/data/2017.csv", 2017)
+// let y2018 = convertToObject(parse2018, "/data/2018.csv", 2018)
+// let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
+// let objArr = {}
 
-let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015)
-let y2016 = convertToObject(parse2016, "/data/2016.csv", 2016)
-let y2017 = convertToObject(parse2017, "/data/2017.csv", 2017)
-let y2018 = convertToObject(parse2018, "/data/2018.csv", 2018)
-let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
-
-let objArr = {}
-Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
-  values.forEach((v) => {
-    objArr[v.year] = v;
-  })
-});
+// Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
+//     values.forEach((v) => {
+//       console.log("In Promise", v.year);
+//       objArr[v.year] = v;
+//     })
+// });
 
 function calculateRankings(obj) {
   let rankings = {};
@@ -218,7 +214,7 @@ function tooltipSizing(tooltip, event, curTextLen, height, width, browser) {
       }
       else if (window.screen.width < 768) 
       {
-        tooltip.style('top', parseInt((event.offsetY)-(height*1.4)) + 'px')
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.45)) + 'px')
               .style('left', parseInt((event.offsetX)-(width*.15)) + 'px')
       }
       else if (window.screen.width < 1024)
@@ -239,7 +235,7 @@ function tooltipSizing(tooltip, event, curTextLen, height, width, browser) {
       }
       else if (window.screen.width < 768) 
       {
-        tooltip.style('top', parseInt((event.offsetY)-(height*1.4)) + 'px')
+        tooltip.style('top', parseInt((event.offsetY)-(height*1.45)) + 'px')
               .style('left', parseInt((event.offsetX)-(width*.15)) + 'px')
       }
       else if (window.screen.width < 1024)
@@ -303,6 +299,11 @@ function tooltipSizing(tooltip, event, curTextLen, height, width, browser) {
   }
 }
 
+function calculateColorScale(objArr, rankings, scale, curYear, curMetric, country) {
+  let surveyData = Object.values(objArr[curYear]).filter(x => x.id === country.id);
+  return surveyData[0] ? scale(rankings[curYear][curMetric].indexOf(country.id) + 1) : 'grey';
+};
+
 function calculateColorLegendValues(lengthOfYear, numDivisions) {
   let res = [0];
   let interval = lengthOfYear / numDivisions;
@@ -320,10 +321,10 @@ const colorRanges = {
   'hRank': ['#0DFE5A', 'white', '#C41010'],
   'econ': ['#143601', 'white', '#eca400'],
   'family': ['#431259', 'white', '#dc2f02'],
-  'trust': ['#03045E', 'white', '#aafcb8'],
+  'trust': ['#03045E', 'white', '#2d6a4f'],
   'freedom': ['#fa7921', 'white', '#0c4767'],
   'generosity': ['#f15152', 'white', '#1e555c'],
-  'health': ['#9a031e', 'white', '#d7a9ff']
+  'health': ['#9a031e', 'white', '#560bad']
 };
 
 function makeResponsive(svg) {
@@ -348,7 +349,20 @@ function makeResponsive(svg) {
   }
 }
 
-let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
+let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015)
+let y2016 = convertToObject(parse2016, "/data/2016.csv", 2016)
+let y2017 = convertToObject(parse2017, "/data/2017.csv", 2017)
+let y2018 = convertToObject(parse2018, "/data/2018.csv", 2018)
+let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
+let objArr = {}
+
+Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
+  values.forEach((v) => {
+    console.log("In Promise", v.year);
+    objArr[v.year] = v;
+  })
+
+  let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
   .then(mapData => {
     let geoData = topojson.feature(mapData, mapData.objects.countries).features;
     geoData.forEach(country => {
@@ -373,7 +387,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     const rankings = calculateRankings(objArr);
     //console.log('geoData', geoData);
     //geoData.forEach((country) => console.log(country['properties']['name']));
-    //console.log('objArr', objArr, 'rankings', rankings);
+    console.log('objArr', objArr, 'rankings', rankings);
     //geoData.forEach(d => console.log([d.properties.name, d.id]));
     //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
     // console.log('scaleChromatic', colorRangesScaleChromatic);
@@ -464,6 +478,8 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         // tooltip.style('height', 'auto')                
       });
 
+    [2015, 2016, 2017, 2018, 2019].forEach(year => { if (!objArr[year]) {console.log("ERROR!!!", year) }});
+
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])
                   .range(colorRanges[curMetric]);
@@ -487,7 +503,7 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
     
     const getYear = document.querySelector('#years');
     getYear.addEventListener('change', (event) => {
-      curYear = event.target.value;
+      curYear = parseInt(event.target.value);
       colorLegendVals = calculateColorLegendValues(Object.values(objArr[curYear]).length, 7);
 
       d3.selectAll('.country')
@@ -523,4 +539,5 @@ let geoDataGlobal = d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countrie
         .ease(d3.easeCircleOut)
         .attr('fill', d => calculateColorScale(objArr, rankings, scale, curYear, curMetric, d));
     });
-}).catch((e) => console.log(e));
+  }).catch((e) => console.log(e))
+});
