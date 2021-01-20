@@ -1,5 +1,4 @@
 import { colorLegend } from '/colorLegend.js';
-// const Bowser = require("bowser");
 
 function parse2015(filename) {
   return d3.dsv(",", filename, function(d) {
@@ -111,20 +110,6 @@ async function convertToObject(func, filename, year) {
   return myObj;
 };
 
-// let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015)
-// let y2016 = convertToObject(parse2016, "/data/2016.csv", 2016)
-// let y2017 = convertToObject(parse2017, "/data/2017.csv", 2017)
-// let y2018 = convertToObject(parse2018, "/data/2018.csv", 2018)
-// let y2019 = convertToObject(parse2019, "/data/2019.csv", 2019)
-// let objArr = {}
-
-// Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
-//     values.forEach((v) => {
-//       console.log("In Promise", v.year);
-//       objArr[v.year] = v;
-//     })
-// });
-
 function calculateRankings(obj) {
   let rankings = {};
   let rankedMetrics = ['hRank', 'econ', 'family', 'health', 'trust', 'freedom', 'generosity'];
@@ -133,7 +118,6 @@ function calculateRankings(obj) {
     if (obj[year]) {
       let curYear = Object.values(obj[year]);
       curYear.shift();
-      //console.log("PRE", curYear);
       rankedMetrics.forEach(metric => {
         let curMetric = [...curYear];
         if (metric !== 'hRank') {
@@ -141,7 +125,6 @@ function calculateRankings(obj) {
         }
           curMetric.forEach((country) => {if (!country['id']) {console.log("COUNTRY", country)}});
           curMetric = curMetric.map((key) => key['id']);
-          //console.log("POST", curMetric);
           rankings[year][metric] = curMetric;
       });
     };
@@ -184,7 +167,8 @@ const countryNameVariances = {
 };
 
 const metricExplanations = {
-  'hRank': '<b>Happiness Rank</b>', 
+  'hRank': 'The <b>Happiness Rank</b> represents an average of indviduals own assessments\n\
+            of their subjective well-being, as indicated by their survey responses in the Gallup World Poll.', 
   'econ': 'The <b>Economic metric</b> represents the GDP (per capita)  of each country', 
   'family': 'The <b>Family metric</b> is the national average of the binary responses (0=no, 1=yes)\n\
             to the Gallup World Poll question, \"If you were in trouble, do you have relatives\n\
@@ -385,13 +369,6 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
     });
     
     const rankings = calculateRankings(objArr);
-    //console.log('geoData', geoData);
-    //geoData.forEach((country) => console.log(country['properties']['name']));
-    console.log('objArr', objArr, 'rankings', rankings);
-    //geoData.forEach(d => console.log([d.properties.name, d.id]));
-    //console.log('ColorLegendFunc', calculateColorLegendValues(Object.values(objArr[2015]).length, 7));
-    // console.log('scaleChromatic', colorRangesScaleChromatic);
-
     
     const width = 940;
     const height = 640;
@@ -409,9 +386,6 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
     const projection = d3.geoNaturalEarth1()
                          .scale(130)
                          .translate([width / 2, height / 2]);
-                        //  .translate([parseInt(svg.attr('width'))/2, parseInt(svg.attr('height'))/2]);
-                        // .translate([150, 150]);
-
 
     const pathGenerator = d3.geoPath().projection(projection);
 
@@ -453,14 +427,8 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
         let curText = tooltipText(objArr, rankings, curYear, d);
         tooltip.transition().duration(200).style('opacity', .8);  
         tooltip.html(curText);
-        // let browser = Bowser.getParser(window.navigator.userAgent);
-        // console.log(browser);
-
-        // let mouse = d3.mouse(this);
-        // console.log(mouse);
         let event = d3.event;
-        //console.log(event);
-        
+
         if (!event.offsetX || !event.offestY) {
           tooltipSizing(tooltip, event, curText.length, svgHeight, svgWidth, 'Firefox')
         }
@@ -473,12 +441,8 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
         tooltip.transition()
                .duration(500)
                .style('opacity', 0)    
-               .style('height', 'auto')
-
-        // tooltip.style('height', 'auto')                
+               .style('height', 'auto')             
       });
-
-    [2015, 2016, 2017, 2018, 2019].forEach(year => { if (!objArr[year]) {console.log("ERROR!!!", year) }});
 
     let scale = d3.scaleLinear()
                   .domain([1, Object.values(objArr[curYear]).length / 2, Object.values(objArr[curYear]).length + 1])

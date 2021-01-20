@@ -119,7 +119,6 @@ select {
   font-size: .5em;
   max-width: 75%;
   line-height: 1.6;
-  /* border: solid grey; */
   border-radius: 10px;
   box-shadow: 0 0 3px 2px darkgrey;
 }
@@ -138,8 +137,6 @@ select {
   pointer-events: none;    
   overflow: hidden;
   transition: height 500 ease-out;
-  /* transform: scale(0);
-  transition: transform ease-out 50ms; */
 }
 
 
@@ -148,7 +145,6 @@ select {
     display: block;
     background-size: contain;
     background-repeat: no-repeat;
-    /* overflow: hidden; */
     width: 100%;
     height: 100%;
   }
