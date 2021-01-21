@@ -123,7 +123,6 @@ function calculateRankings(obj) {
         if (metric !== 'hRank') {
           curMetric.sort((a, b) => (parseFloat(a[metric]) > parseFloat(b[metric]) ? -1 : 1));
         }
-          curMetric.forEach((country) => {if (!country['id']) {console.log("COUNTRY", country)}});
           curMetric = curMetric.map((key) => key['id']);
           rankings[year][metric] = curMetric;
       });
@@ -275,8 +274,8 @@ function tooltipSizing(tooltip, event, curTextLen, height, width, browser) {
               .style('left', parseInt((event.clientX)-(width*.25)) + 'px');
       }
       else {
-        tooltip.style('top', parseInt((event.clientY)-(height*1.3)) + 'px')
-              .style('left', parseInt((event.clientX)-(width*.25)) + 'px');
+        tooltip.style('top', parseInt((event.clientY)-(height*1.25)) + 'px')
+              .style('left', parseInt((event.clientX)-(width*.15)) + 'px');
 
       }
     }
@@ -367,21 +366,20 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
     
     const rankings = calculateRankings(objArr);
     
-    const width = 940;
-    const height = 640;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     const svg = d3.select('#svg-content');
     svg.attr('height', height)
        .attr('width', width)
        .call(makeResponsive);
 
-    
     let curYear = 2015;
     let curMetric  = 'hRank';
     const getText = document.querySelector('#metric-text');
     getText.innerHTML = metricExplanations[curMetric];    
 
     const projection = d3.geoNaturalEarth1()
-                         .scale(130)
+                         .scale(175)
                          .translate([width / 2, height / 2]);
 
     const pathGenerator = d3.geoPath().projection(projection);

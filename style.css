@@ -126,12 +126,12 @@ select {
 .tooltip {
   position: relative;
   text-align: center;           
-  font-size: 4px; 
+  font-size: 5px; 
   white-space: pre-line;
-  padding: 5px;                     
+  padding: .5em;                     
   background: lightgray;   
   width: 50px;
-  height: 80px;
+  height: 100px;
   border: 0px;      
   border-radius: 8px;           
   pointer-events: none;    
