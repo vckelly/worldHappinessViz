@@ -379,7 +379,7 @@ Promise.all([y2015, y2016, y2017, y2018, y2019]).then(values => {
     getText.innerHTML = metricExplanations[curMetric];    
 
     const projection = d3.geoNaturalEarth1()
-                         .scale(175)
+                         .scale(150)
                          .translate([width / 2, height / 2]);
 
     const pathGenerator = d3.geoPath().projection(projection);
