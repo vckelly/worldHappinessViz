@@ -109,6 +109,11 @@ select {
   top: 65%;
 }
 
+.card {
+  max-width: 75%;
+  justify-content: center;
+  text-align: center;
+}
 .metric-summary {
   justify-content: center;
   text-align: center;

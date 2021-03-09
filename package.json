@@ -1,0 +1,24 @@
+{
+  "name": "worldhappinessviz",
+  "version": "1.0.0",
+  "description": "World Happiness Report Visualization ",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vckelly/worldHappinessViz.git"
+  },
+  "author": "V. Connor Kelly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vckelly/worldHappinessViz/issues"
+  },
+  "homepage": "https://github.com/vckelly/worldHappinessViz#readme",
+  "dependencies": {
+    "bowser": "^2.11.0",
+    "d3-svg-legend": "^2.25.6",
+    "live-server": "^1.2.1"
+  }
+}
