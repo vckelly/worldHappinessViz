@@ -1,4 +1,6 @@
+import convertToObject from "./utils/convertToObject.js";
 import { colorLegend } from "./utils/colorLegend.js";
+import { calculateRankings } from "./utils/calculateRankings.js";
 import { makeResponsive } from "./utils/responsiveFuncs.js";
 import { parse2015, 
          parse2016,
@@ -13,60 +15,6 @@ import { tooltipSizing } from "./utils/tooltipSizing.js";
 import { countryNameVariances, metricExplanations } from "./utils/metricNaming.js";
 import { tooltipText } from "./utils/tooltipText.js";
 
-async function convertToObject(func, filename, year) {
-  const nameVariances = {
-    "Congo (Kinshasa)": "Democratic Republic of the Congo",
-    "Congo (Brazzaville)": "Congo",
-    "Northern Cyprus": "North Cyprus",
-    "North Macedonia": "Macedonia",
-    "Hong Kong S.A.R., China": "Hong Kong",
-    "Somaliland region": "Somaliland",
-    "Somaliland Region": "Somaliland",
-    "Taiwan Province of China": "Taiwan",
-    "Trinidad & Tobago": "Trinidad and Tobago",
-  };
-  let myObj = new Object();
-  let y = await func(filename);
-  myObj["year"] = year;
-  y.forEach((row) => {
-    if (Object.keys(nameVariances).includes(row["country"])) {
-      row["country"] = nameVariances[row["country"]];
-    }
-    myObj[row["country"]] = row;
-  });
-  return myObj;
-}
-
-function calculateRankings(obj) {
-  let rankings = {};
-  let rankedMetrics = [
-    "hRank",
-    "econ",
-    "family",
-    "health",
-    "trust",
-    "freedom",
-    "generosity",
-  ];
-  [2015, 2016, 2017, 2018, 2019].forEach((year) => {
-    rankings[year] = {};
-    if (obj[year]) {
-      let curYear = Object.values(obj[year]);
-      curYear.shift();
-      rankedMetrics.forEach((metric) => {
-        let curMetric = [...curYear];
-        if (metric !== "hRank") {
-          curMetric.sort((a, b) =>
-            parseFloat(a[metric]) > parseFloat(b[metric]) ? -1 : 1
-          );
-        }
-        curMetric = curMetric.map((key) => key["id"]);
-        rankings[year][metric] = curMetric;
-      });
-    }
-  });
-  return rankings;
-}
 
 let y2015 = convertToObject(parse2015, "/data/2015.csv", 2015);
 let y2016 = convertToObject(parse2016, "/data/2016.csv", 2016);
